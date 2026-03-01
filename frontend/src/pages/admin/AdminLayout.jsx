@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from '../../components/Navbar';
+import FloatingNavbar from '../../components/FloatingNavbar';
 import ProfileSidebar from '../../components/ProfileSidebar';
 import { useAuth } from '../../context/AuthContext';
 import { HiBell } from 'react-icons/hi';
 
-const ADMIN_LINKS = [
-  { path: '/admin', label: 'Dashboard' },
+const ADMIN_MENU = [
+  { path: '/admin', label: 'Home' },
   { path: '/admin/house/jal', label: 'Jal' },
   { path: '/admin/house/vayu', label: 'Vayu' },
   { path: '/admin/house/agni', label: 'Agni' },
@@ -49,7 +49,7 @@ const AdminLayout = () => {
           </div>
         </div>
       </div>
-      <Navbar links={ADMIN_LINKS} onProfileClick={() => setProfileOpen(true)} />
+      <FloatingNavbar menuItems={ADMIN_MENU} onProfileClick={() => setProfileOpen(true)} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Outlet />
       </div>

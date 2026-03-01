@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from '../../components/Navbar';
+import FloatingNavbar from '../../components/FloatingNavbar';
 import HeroSection from '../../components/HeroSection';
 import ProfileSidebar from '../../components/ProfileSidebar';
 
-const MENTOR_LINKS = [
+const MENTOR_MENU = [
   { path: '/mentor', label: 'Approvals' },
   { path: '/mentor/about-house', label: 'About House' },
 ];
@@ -15,7 +15,7 @@ const MentorLayout = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <HeroSection subtitle="Review events and monitor your house" />
-      <Navbar links={MENTOR_LINKS} onProfileClick={() => setProfileOpen(true)} />
+      <FloatingNavbar menuItems={MENTOR_MENU} onProfileClick={() => setProfileOpen(true)} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Outlet />
       </div>

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from '../../components/Navbar';
+import FloatingNavbar from '../../components/FloatingNavbar';
 import HeroSection from '../../components/HeroSection';
 import ProfileSidebar from '../../components/ProfileSidebar';
 
-const STUDENT_LINKS = [
+const STUDENT_MENU = [
   { path: '/student', label: 'Home' },
   { path: '/student/participations', label: 'Event Participation' },
   { path: '/student/houseboard', label: 'Houseboard' },
@@ -17,7 +17,7 @@ const StudentLayout = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <HeroSection subtitle="Explore events and earn points for your house" />
-      <Navbar links={STUDENT_LINKS} onProfileClick={() => setProfileOpen(true)} />
+      <FloatingNavbar menuItems={STUDENT_MENU} onProfileClick={() => setProfileOpen(true)} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Outlet />
       </div>
