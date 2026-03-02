@@ -58,10 +58,10 @@ export const HOUSE_COLORS = {
 };
 
 export const HOUSE_LOGOS = {
-  Jal: '🌊',
+  Jal: '/jal-logo.png',
   Vayu: '🌬️',
-  Agni: '🔥',
-  Akash: '✨',
+  Agni: '/agni-logo.png',
+  Akash: '/akash-logo.png',
   Prudhvi: '🌍',
 };
 
@@ -71,6 +71,11 @@ export const getHouseColor = (houseName) => {
 
 export const getHouseLogo = (houseName) => {
   return HOUSE_LOGOS[houseName] || '🏠';
+};
+
+export const isImageLogo = (houseName) => {
+  const logo = HOUSE_LOGOS[houseName];
+  return logo && (logo.startsWith('/') || logo.startsWith('http'));
 };
 
 export const formatDate = (date) => {
@@ -87,6 +92,14 @@ export const getStatusColor = (status) => {
     approved: 'bg-blue-100 text-blue-800',
     rejected: 'bg-red-100 text-red-800',
     published: 'bg-green-100 text-green-800',
+    closed: 'bg-gray-200 text-gray-700',
   };
-  return colors[status] || 'bg-gray-100 text-gray-800';
+  const labels = {
+    pending: 'Pending',
+    approved: 'Approved',
+    rejected: 'Rejected',
+    published: 'Ongoing',
+    closed: 'Completed',
+  };
+  return { color: colors[status] || 'bg-gray-100 text-gray-800', label: labels[status] || status };
 };

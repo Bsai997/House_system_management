@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import FloatingNavbar from '../../components/FloatingNavbar';
 import ProfileSidebar from '../../components/ProfileSidebar';
+import AddMemberModal from '../../components/AddMemberModal';
 import { useAuth } from '../../context/AuthContext';
-import { HiBell } from 'react-icons/hi';
 
 const ADMIN_MENU = [
   { path: '/admin', label: 'Home' },
@@ -17,6 +17,7 @@ const ADMIN_MENU = [
 const AdminLayout = () => {
   const { user } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [memberModalOpen, setMemberModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -38,12 +39,12 @@ const AdminLayout = () => {
                 <p className="text-white/70 text-sm mt-1">House Event Management System</p>
               </div>
             </div>
-            <div className="hidden sm:flex items-center">
+            <div className="flex items-center shrink-0">
               <button
-                className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition"
-                title="Notifications"
+                onClick={() => setMemberModalOpen(true)}
+                className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-xl text-sm sm:text-base font-medium hover:bg-white/30 transition"
               >
-                <HiBell size={24} />
+                Add Member
               </button>
             </div>
           </div>
@@ -57,6 +58,7 @@ const AdminLayout = () => {
         isOpen={profileOpen}
         onClose={() => setProfileOpen(false)}
       />
+      <AddMemberModal isOpen={memberModalOpen} onClose={() => setMemberModalOpen(false)} />
     </div>
   );
 };

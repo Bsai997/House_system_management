@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { getGlobalDashboard } from '../../services/api';
 import LeaderboardCard from '../../components/LeaderboardCard';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
-import { getHouseColor } from '../../utils/constants';
 import toast from 'react-hot-toast';
 
 const AdminDashboard = () => {
@@ -28,54 +27,29 @@ const AdminDashboard = () => {
   return (
     <div>
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="card p-5 text-center">
-          <p className="text-3xl font-bold text-blue-600">{data?.stats?.totalHouses}</p>
-          <p className="text-sm text-gray-500 mt-1">Total Houses</p>
+      <div className="flex justify-center mb-8">
+        <div className="grid grid-cols-3 gap-5 max-w-2xl w-full">
+          <div className="card py-6 px-4 text-center transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] cursor-pointer">
+            <p className="text-4xl font-bold text-green-600">{data?.stats?.totalStudents}</p>
+            <p className="text-sm text-gray-500 mt-2">Total Students</p>
+          </div>
+          <div className="card py-6 px-4 text-center transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] cursor-pointer">
+            <p className="text-4xl font-bold text-blue-600">{data?.stats?.ongoingEvents}</p>
+            <p className="text-sm text-gray-500 mt-2">Ongoing Events</p>
+          </div>
+          <div className="card py-6 px-4 text-center transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] cursor-pointer">
+            <p className="text-4xl font-bold text-amber-600">{data?.stats?.completedEvents}</p>
+            <p className="text-sm text-gray-500 mt-2">Completed Events</p>
+          </div>
         </div>
-        <div className="card p-5 text-center">
-          <p className="text-3xl font-bold text-green-600">{data?.stats?.totalStudents}</p>
-          <p className="text-sm text-gray-500 mt-1">Total Students</p>
-        </div>
-        <div className="card p-5 text-center">
-          <p className="text-3xl font-bold text-purple-600">{data?.stats?.totalEvents}</p>
-          <p className="text-sm text-gray-500 mt-1">Total Events</p>
-        </div>
-        <div className="card p-5 text-center">
-          <p className="text-3xl font-bold text-amber-600">{data?.stats?.publishedEvents}</p>
-          <p className="text-sm text-gray-500 mt-1">Published Events</p>
-        </div>
-      </div>
-
-      {/* House Overview Cards */}
-      <h2 className="text-xl font-bold text-gray-900 mb-4">🏛️ House Overview</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
-        {data?.dashboard?.map((house) => {
-          const colors = getHouseColor(house.name);
-          return (
-            <div key={house._id} className="card p-5 text-center">
-              <div
-                className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3"
-                style={{ backgroundColor: colors.light }}
-              >
-                {house.logo || '🏠'}
-              </div>
-              <h3 className="font-bold text-gray-900">House {house.name}</h3>
-              <p className="text-2xl font-bold mt-2" style={{ color: colors.primary }}>
-                {house.totalPoints}
-              </p>
-              <p className="text-xs text-gray-400">points</p>
-              <div className="flex justify-center gap-4 mt-3 text-xs text-gray-500">
-                <span>#{house.rank} rank</span>
-                <span>{house.eventsCount || 0} events</span>
-              </div>
-            </div>
-          );
-        })}
       </div>
 
       {/* Global Leaderboard */}
-      {data?.dashboard && <LeaderboardCard houses={data.dashboard} />}
+      <h2 className="text-xl font-bold text-gray-900 mb-4 text-center">🏆 Global House Leaderboard</h2>
+      <div className="flex justify-center w-full">
+        {data?.dashboard && <div className="w-full max-w-4xl"><LeaderboardCard houses={data.dashboard} /></div>}
+      </div>
+
     </div>
   );
 };

@@ -1,8 +1,7 @@
-import { getHouseColor, getHouseLogo } from '../utils/constants';
+import { getHouseColor, getHouseLogo, isImageLogo } from '../utils/constants';
 import { useAuth } from '../context/AuthContext';
-import { HiBell } from 'react-icons/hi';
 
-const HeroSection = ({ title, subtitle }) => {
+const HeroSection = ({ title, subtitle, actionButton }) => {
   const { user } = useAuth();
   const houseName = user?.house?.name;
   const houseColors = houseName ? getHouseColor(houseName) : null;
@@ -17,8 +16,12 @@ const HeroSection = ({ title, subtitle }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             {houseName && (
-              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-3xl">
-                {getHouseLogo(houseName)}
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-3xl overflow-hidden">
+                {isImageLogo(houseName) ? (
+                  <img src={getHouseLogo(houseName)} alt={houseName} className="w-full h-full object-cover" />
+                ) : (
+                  getHouseLogo(houseName)
+                )}
               </div>
             )}
             <div>
@@ -30,14 +33,11 @@ const HeroSection = ({ title, subtitle }) => {
               </p>
             </div>
           </div>
-          <div className="hidden sm:flex items-center">
-            <button
-              className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition"
-              title="Notifications"
-            >
-              <HiBell size={24} />
-            </button>
-          </div>
+          {actionButton && (
+            <div className="flex items-center shrink-0">
+              {actionButton}
+            </div>
+          )}
         </div>
       </div>
     </div>

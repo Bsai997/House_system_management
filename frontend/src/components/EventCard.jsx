@@ -18,9 +18,9 @@ const EventCard = ({ event, actions, showPoster = true }) => {
           <span
             className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
               event.status
-            )}`}
+            ).color}`}
           >
-            {event.status}
+            {getStatusColor(event.status).label}
           </span>
         </div>
         <p className="text-sm font-bold text-gray-600 mb-3 line-clamp-2">{event.description}</p>

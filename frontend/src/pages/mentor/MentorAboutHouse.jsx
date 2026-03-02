@@ -4,7 +4,7 @@ import DataTable from '../../components/DataTable';
 import EventCard from '../../components/EventCard';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import { useAuth } from '../../context/AuthContext';
-import { getHouseColor, getHouseLogo, formatDate } from '../../utils/constants';
+import { getHouseColor, getHouseLogo, isImageLogo, formatDate } from '../../utils/constants';
 import toast from 'react-hot-toast';
 import {
   HiUsers, HiStar, HiTrendingUp, HiCalendar,
@@ -44,10 +44,10 @@ const MentorAboutHouse = () => {
   if (loading) return <LoadingSkeleton type="table" count={5} />;
 
   const ongoing = events.filter(
-    (e) => e.status === 'published' && new Date(e.date) >= new Date()
+    (e) => e.status === 'published'
   );
   const previous = events.filter(
-    (e) => e.status === 'published' && new Date(e.date) < new Date()
+    (e) => e.status === 'closed'
   );
 
   const columns = [
@@ -139,7 +139,7 @@ const MentorAboutHouse = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
               </span>
-              <h3 className="text-base font-semibold text-gray-800">Ongoing Events</h3>
+              <h3 className="text-base font-semibold text-gray-800">Ongoing Events (Published)</h3>
               <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">{ongoing.length}</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -150,50 +150,17 @@ const MentorAboutHouse = () => {
           </div>
         )}
 
-        {/* Previous Events */}
+        {/* Completed Events */}
         {previous.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-4">
               <HiClock className="w-4 h-4 text-gray-400" />
-              <h3 className="text-base font-semibold text-gray-800">Past Events</h3>
+              <h3 className="text-base font-semibold text-gray-800">Completed Events</h3>
               <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">{previous.length}</span>
             </div>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {previous.map((event) => (
-                <div
-                  key={event._id}
-                  className="group relative bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md hover:border-gray-200 transition-all duration-300"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg font-bold flex-shrink-0"
-                        style={{ backgroundColor: houseColors.primary + '15', color: houseColors.primary }}
-                      >
-                        {event.name?.charAt(0)}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900">{event.name}</h4>
-                        <div className="flex flex-wrap gap-3 text-xs text-gray-500 mt-1">
-                          <span className="inline-flex items-center gap-1">
-                            <HiLocationMarker className="w-3.5 h-3.5" /> {event.venue}
-                          </span>
-                          <span className="inline-flex items-center gap-1">
-                            <HiCalendar className="w-3.5 h-3.5" /> {formatDate(event.date)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-sm font-bold" style={{ color: houseColors.primary }}>
-                        +{event.housePoints} pts
-                      </p>
-                      <p className="text-xs text-gray-400 mt-0.5">
-                        {event.participationCount || 0} joined
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <EventCard key={event._id} event={event} />
               ))}
             </div>
           </div>
@@ -214,14 +181,6 @@ const MentorAboutHouse = () => {
 
   // ── Main House Overview ──
   const statsCards = [
-    {
-      label: 'Total Points',
-      value: dashboard?.house?.totalPoints || 0,
-      icon: <HiStar className="w-6 h-6" />,
-      gradient: `from-amber-400 to-yellow-500`,
-      bgLight: 'bg-amber-50',
-      textColor: 'text-amber-600',
-    },
     {
       label: 'Total Students',
       value: dashboard?.students?.length || 0,
@@ -280,10 +239,14 @@ const MentorAboutHouse = () => {
           <div className="p-6">
             <div className="flex items-center gap-5 mb-6">
               <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
+                className="w-16 h-16 rounded-full flex items-center justify-center text-3xl overflow-hidden"
                 style={{ backgroundColor: houseColors.primary + '15' }}
               >
-                {getHouseLogo(houseName)}
+                {isImageLogo(houseName) ? (
+                  <img src={getHouseLogo(houseName)} alt={houseName} className="w-full h-full object-cover" />
+                ) : (
+                  getHouseLogo(houseName)
+                )}
               </div>
               <div>
                 <h4 className="text-xl font-bold text-gray-900">House {houseName}</h4>
