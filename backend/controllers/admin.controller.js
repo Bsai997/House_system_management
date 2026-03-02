@@ -1,6 +1,7 @@
 const House = require('../models/House');
 const User = require('../models/User');
 const Event = require('../models/Event');
+const bcrypt = require('bcryptjs');
 
 // @desc    Get global dashboard (all houses overview)
 // @route   GET /api/admin/dashboard
@@ -12,7 +13,8 @@ exports.getGlobalDashboard = async (req, res) => {
 
     const totalStudents = await User.countDocuments({ role: 'student' });
     const totalEvents = await Event.countDocuments();
-    const publishedEvents = await Event.countDocuments({ status: 'published' });
+    const ongoingEvents = await Event.countDocuments({ status: 'published' });
+    const completedEvents = await Event.countDocuments({ status: 'closed' });
 
     // Recalculate totalPoints from actual student points for each house
     const housesWithPoints = await Promise.all(
@@ -24,6 +26,7 @@ exports.getGlobalDashboard = async (req, res) => {
         }
         const obj = house.toObject();
         obj.totalPoints = calculatedPoints;
+        obj.studentsCount = students.length;
         return obj;
       })
     );
@@ -42,7 +45,8 @@ exports.getGlobalDashboard = async (req, res) => {
         totalHouses: houses.length,
         totalStudents,
         totalEvents,
-        publishedEvents,
+        ongoingEvents,
+        completedEvents,
       },
     });
   } catch (error) {
@@ -107,14 +111,91 @@ exports.getAdminHouseEvents = async (req, res) => {
       .sort({ date: -1 });
 
     const ongoing = events.filter(
-      (e) => e.status === 'published' && new Date(e.date) >= new Date()
+      (e) => e.status === 'published'
     );
     const previous = events.filter(
-      (e) => e.status === 'published' && new Date(e.date) < new Date()
+      (e) => e.status === 'closed'
     );
     const pending = events.filter((e) => e.status === 'pending');
 
     res.json({ success: true, ongoing, previous, pending, all: events });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Add a mentor or team lead
+// @route   POST /api/admin/add-member
+exports.addMember = async (req, res) => {
+  try {
+    const { name, email, password, role, houseId, department, regdNo, year } = req.body;
+
+    if (!['mentor', 'teamlead'].includes(role)) {
+      return res.status(400).json({ success: false, message: 'Role must be mentor or teamlead' });
+    }
+
+    // Mentors can only add teamleads for their own house
+    if (req.user.role === 'mentor') {
+      if (role !== 'teamlead') {
+        return res.status(403).json({ success: false, message: 'Mentors can only add team leads' });
+      }
+      if (houseId !== req.user.houseId._id.toString() && houseId !== req.user.houseId.toString()) {
+        return res.status(403).json({ success: false, message: 'You can only add team leads to your own house' });
+      }
+    }
+
+    if (!password || password.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+    }
+
+    // Check existing user
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'Email already registered' });
+    }
+
+    if (regdNo) {
+      const existingRegd = await User.findOne({ regdNo });
+      if (existingRegd) {
+        return res.status(400).json({ success: false, message: 'Registration number already exists' });
+      }
+    }
+
+    // Check house exists
+    const house = await House.findById(houseId);
+    if (!house) {
+      return res.status(404).json({ success: false, message: 'House not found' });
+    }
+
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role,
+      houseId,
+      department,
+      regdNo: regdNo || undefined,
+      year: year || undefined,
+    });
+
+    // Update house with mentor/teamlead
+    if (role === 'teamlead') {
+      await House.findByIdAndUpdate(houseId, { teamLeadId: user._id });
+    } else if (role === 'mentor') {
+      await House.findByIdAndUpdate(houseId, { mentorId: user._id });
+    }
+
+    res.status(201).json({
+      success: true,
+      message: `${role === 'mentor' ? 'Mentor' : 'Team Lead'} added successfully`,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        department: user.department,
+      },
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

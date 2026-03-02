@@ -5,6 +5,7 @@ const {
   getPendingEvents,
   approveEvent,
   publishEvent,
+  closeEvent,
   getPublishedEvents,
   getEventsByHouse,
   getMyEvents,
@@ -24,5 +25,6 @@ router.get('/:id', protect, getEvent);
 router.post('/', protect, authorize('teamlead'), upload.single('poster'), createEvent);
 router.put('/:id/approve', protect, authorize('mentor'), approveEvent);
 router.put('/:id/publish', protect, authorize('teamlead'), publishEvent);
+router.put('/:id/close', protect, authorize('teamlead'), closeEvent);
 
 module.exports = router;
