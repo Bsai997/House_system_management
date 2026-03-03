@@ -234,10 +234,6 @@ const AdminLayout = () => {
                   <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'white', margin: 0, letterSpacing: '-0.3px' }}>
                     CSD &amp; CSIT Department
                   </h1>
-                  <div className="header-pill">
-                    <div className="status-dot"></div>
-                    LIVE
-                  </div>
                 </div>
                 <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px', margin: 0, fontWeight: '500' }}>
                   🏆 House Event Management System · Admin Panel
@@ -247,11 +243,6 @@ const AdminLayout = () => {
 
             {/* Right: Actions */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              {/* Date/Time pill */}
-              <div className="header-pill" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '1px', borderRadius: '12px' }}>
-                <span style={{ color: 'rgba(255,255,255,0.9)', fontSize: '13px', fontWeight: '600' }}>{timeString}</span>
-                <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '10px' }}>{dateString}</span>
-              </div>
 
               {/* Add Member button */}
               <button className="add-member-btn" onClick={() => setMemberModalOpen(true)}>

@@ -1,7 +1,8 @@
+import { HiUser } from 'react-icons/hi';
 import { getHouseColor, getHouseLogo, isImageLogo } from '../utils/constants';
 import { useAuth } from '../context/AuthContext';
 
-const HeroSection = ({ title, subtitle, actionButton }) => {
+const HeroSection = ({ title, subtitle, actionButton, onProfileClick }) => {
   const { user } = useAuth();
   const houseName = user?.house?.name;
   const houseColors = houseName ? getHouseColor(houseName) : null;
@@ -53,11 +54,32 @@ const HeroSection = ({ title, subtitle, actionButton }) => {
               </p>
             </div>
           </div>
-          {actionButton && (
-            <div className="flex items-center shrink-0">
-              {actionButton}
-            </div>
-          )}
+          <div className="flex items-center shrink-0 gap-3">
+            {actionButton && actionButton}
+            {onProfileClick && (
+              <button
+                onClick={onProfileClick}
+                title="View Profile"
+                style={{
+                  width: '42px', height: '42px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(to right, #111827, #1f2937, #000000)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(55, 65, 81, 0.5)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  color: '#d1d5db',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.2)'; e.currentTarget.style.color = 'white'; e.currentTarget.style.transform = 'scale(1.1)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'linear-gradient(to right, #111827, #1f2937, #000000)'; e.currentTarget.style.color = '#d1d5db'; e.currentTarget.style.transform = 'scale(1)'; }}
+              >
+                <HiUser size={20} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -62,7 +62,7 @@ export const HOUSE_LOGOS = {
   Vayu: '/vayu-logo.png',
   Agni: '/agni-logo.png',
   Akash: '/akash-logo.png',
-  Prudhvi: '🌍',
+  Prudhvi: '/prudhvi-logo.png',
 };
 
 export const getHouseColor = (houseName) => {
