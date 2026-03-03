@@ -72,8 +72,8 @@ const Login = () => {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mx-auto flex items-center justify-center text-4xl mb-4">
-            🏛️
+          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full mx-auto flex items-center justify-center overflow-hidden mb-4">
+            <img src="/houses.png" alt="Houses Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-3xl font-bold text-white">House Event Management</h1>
           <p className="text-white/70 mt-2">CSD & CSIT Department</p>

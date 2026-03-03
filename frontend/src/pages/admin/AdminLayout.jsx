@@ -26,13 +26,8 @@ const AdminLayout = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex gap-3">
-                <div className="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center text-2xl">
-                  🎓
-                </div>
-                <div className="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center text-2xl">
-                  💻
-                </div>
+              <div className="w-14 h-14 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center overflow-hidden">
+                <img src="/dept-logo.png" alt="Department Logo" className="w-full h-full object-cover" />
               </div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold">CSD & CSIT Department</h1>

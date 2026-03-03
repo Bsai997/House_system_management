@@ -306,8 +306,7 @@ const MentorAboutHouse = () => {
             </p>
             <button
               onClick={() => setShowEvents(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
-              style={{ backgroundColor: houseColors.primary }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer btn-primary"
             >
               View All Events
               <HiChevronRight className="w-4 h-4" />

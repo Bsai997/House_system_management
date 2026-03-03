@@ -88,8 +88,8 @@ const AddMemberModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto max-h-[90vh] flex flex-col overflow-hidden animate-in">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b bg-gray-50">
           <h2 className="text-lg font-bold text-gray-900">
@@ -105,7 +105,7 @@ const AddMemberModal = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto flex-1">
           {/* Step 1: Choose Role */}
           {step === 'choose' && (
             <div className="space-y-4">
@@ -139,81 +139,85 @@ const AddMemberModal = ({ isOpen, onClose }) => {
 
           {/* Step 2a: Mentor Form */}
           {step === 'mentor' && (
-            <form onSubmit={handleMentorSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter mentor name"
-                  value={mentorForm.name}
-                  onChange={(e) => setMentorForm({ ...mentorForm, name: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                />
+            <form onSubmit={handleMentorSubmit} className="space-y-3">
+              <div className="grid grid-cols-1 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Name</label>
+                  <input
+                    type="text"
+                    placeholder="Enter mentor name"
+                    value={mentorForm.name}
+                    onChange={(e) => setMentorForm({ ...mentorForm, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Email</label>
+                  <input
+                    type="email"
+                    placeholder="Enter email address"
+                    value={mentorForm.email}
+                    onChange={(e) => setMentorForm({ ...mentorForm, email: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Password</label>
+                  <input
+                    type="password"
+                    placeholder="Enter password"
+                    value={mentorForm.password}
+                    onChange={(e) => setMentorForm({ ...mentorForm, password: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">House</label>
+                    <select
+                      value={mentorForm.houseId}
+                      onChange={(e) => setMentorForm({ ...mentorForm, houseId: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+                    >
+                      <option value="">Select House</option>
+                      {houses.map((h) => (
+                        <option key={h._id} value={h._id}>
+                          {h.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Branch</label>
+                    <select
+                      value={mentorForm.department}
+                      onChange={(e) => setMentorForm({ ...mentorForm, department: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-sm"
+                    >
+                      <option value="">Select Branch</option>
+                      {BRANCHES.map((b) => (
+                        <option key={b} value={b}>
+                          {b}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  placeholder="Enter email address"
-                  value={mentorForm.email}
-                  onChange={(e) => setMentorForm({ ...mentorForm, email: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <input
-                  type="password"
-                  placeholder="Enter password"
-                  value={mentorForm.password}
-                  onChange={(e) => setMentorForm({ ...mentorForm, password: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">House</label>
-                <select
-                  value={mentorForm.houseId}
-                  onChange={(e) => setMentorForm({ ...mentorForm, houseId: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                >
-                  <option value="">Select House</option>
-                  {houses.map((h) => (
-                    <option key={h._id} value={h._id}>
-                      {h.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                <select
-                  value={mentorForm.department}
-                  onChange={(e) => setMentorForm({ ...mentorForm, department: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-                >
-                  <option value="">Select Branch</option>
-                  {BRANCHES.map((b) => (
-                    <option key={b} value={b}>
-                      {b}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-3 pt-3 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setStep('choose')}
-                  className="flex-1 py-2.5 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition"
+                  className="flex-1 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition text-sm"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition disabled:opacity-50"
+                  className="flex-1 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50 text-sm shadow-sm"
                 >
-                  {loading ? 'Creating...' : 'Create'}
+                  {loading ? 'Creating...' : 'Create Mentor'}
                 </button>
               </div>
             </form>
@@ -221,105 +225,111 @@ const AddMemberModal = ({ isOpen, onClose }) => {
 
           {/* Step 2b: Team Lead Form */}
           {step === 'teamlead' && (
-            <form onSubmit={handleTeamLeadSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter team lead name"
-                  value={teamLeadForm.name}
-                  onChange={(e) => setTeamLeadForm({ ...teamLeadForm, name: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-                />
+            <form onSubmit={handleTeamLeadSubmit} className="space-y-3">
+              <div className="grid grid-cols-1 gap-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Name</label>
+                    <input
+                      type="text"
+                      placeholder="Full name"
+                      value={teamLeadForm.name}
+                      onChange={(e) => setTeamLeadForm({ ...teamLeadForm, name: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Regd No</label>
+                    <input
+                      type="text"
+                      placeholder="Reg. number"
+                      value={teamLeadForm.regdNo}
+                      onChange={(e) => setTeamLeadForm({ ...teamLeadForm, regdNo: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-sm"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Email</label>
+                  <input
+                    type="email"
+                    placeholder="Enter email address"
+                    value={teamLeadForm.email}
+                    onChange={(e) => setTeamLeadForm({ ...teamLeadForm, email: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Password</label>
+                  <input
+                    type="password"
+                    placeholder="Enter password"
+                    value={teamLeadForm.password}
+                    onChange={(e) => setTeamLeadForm({ ...teamLeadForm, password: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-sm"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">House</label>
+                    <select
+                      value={teamLeadForm.houseId}
+                      onChange={(e) => setTeamLeadForm({ ...teamLeadForm, houseId: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-sm"
+                    >
+                      <option value="">Select</option>
+                      {houses.map((h) => (
+                        <option key={h._id} value={h._id}>
+                          {h.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Branch</label>
+                    <select
+                      value={teamLeadForm.department}
+                      onChange={(e) => setTeamLeadForm({ ...teamLeadForm, department: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-sm"
+                    >
+                      <option value="">Select</option>
+                      {BRANCHES.map((b) => (
+                        <option key={b} value={b}>
+                          {b}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Year</label>
+                    <select
+                      value={teamLeadForm.year}
+                      onChange={(e) => setTeamLeadForm({ ...teamLeadForm, year: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition text-sm"
+                    >
+                      <option value="">Select</option>
+                      <option value="1">1st Year</option>
+                      <option value="2">2nd Year</option>
+                      <option value="3">3rd Year</option>
+                      <option value="4">4th Year</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Regd No</label>
-                <input
-                  type="text"
-                  placeholder="Enter registration number"
-                  value={teamLeadForm.regdNo}
-                  onChange={(e) => setTeamLeadForm({ ...teamLeadForm, regdNo: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  placeholder="Enter email address"
-                  value={teamLeadForm.email}
-                  onChange={(e) => setTeamLeadForm({ ...teamLeadForm, email: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <input
-                  type="password"
-                  placeholder="Enter password"
-                  value={teamLeadForm.password}
-                  onChange={(e) => setTeamLeadForm({ ...teamLeadForm, password: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">House</label>
-                <select
-                  value={teamLeadForm.houseId}
-                  onChange={(e) => setTeamLeadForm({ ...teamLeadForm, houseId: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-                >
-                  <option value="">Select House</option>
-                  {houses.map((h) => (
-                    <option key={h._id} value={h._id}>
-                      {h.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                <select
-                  value={teamLeadForm.department}
-                  onChange={(e) => setTeamLeadForm({ ...teamLeadForm, department: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-                >
-                  <option value="">Select Branch</option>
-                  {BRANCHES.map((b) => (
-                    <option key={b} value={b}>
-                      {b}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
-                <select
-                  value={teamLeadForm.year}
-                  onChange={(e) => setTeamLeadForm({ ...teamLeadForm, year: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
-                >
-                  <option value="">Select Year</option>
-                  <option value="1">1st Year</option>
-                  <option value="2">2nd Year</option>
-                  <option value="3">3rd Year</option>
-                  <option value="4">4th Year</option>
-                </select>
-              </div>
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-3 pt-3 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setStep('choose')}
-                  className="flex-1 py-2.5 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition"
+                  className="flex-1 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition text-sm"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-2.5 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition disabled:opacity-50"
+                  className="flex-1 py-2.5 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition disabled:opacity-50 text-sm shadow-sm"
                 >
-                  {loading ? 'Creating...' : 'Create'}
+                  {loading ? 'Creating...' : 'Create Team Lead'}
                 </button>
               </div>
             </form>
