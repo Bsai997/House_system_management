@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from '../../components/Navbar';
+import FloatingNavbar from '../../components/FloatingNavbar';
 import HeroSection from '../../components/HeroSection';
 import ProfileSidebar from '../../components/ProfileSidebar';
 
-const TEAMLEAD_LINKS = [
+const TEAMLEAD_MENU = [
   { path: '/teamlead', label: 'Home' },
   { path: '/teamlead/history', label: 'Event History' },
   { path: '/teamlead/registrations', label: 'Registrations' },
@@ -18,7 +18,7 @@ const TeamLeadLayout = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <HeroSection subtitle="Create events and manage your house" />
-      <Navbar links={TEAMLEAD_LINKS} onProfileClick={() => setProfileOpen(true)} />
+      <FloatingNavbar menuItems={TEAMLEAD_MENU} onProfileClick={() => setProfileOpen(true)} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Outlet />
       </div>

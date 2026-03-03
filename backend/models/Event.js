@@ -35,7 +35,7 @@ const eventSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'approved', 'rejected', 'published'],
+      enum: ['pending', 'approved', 'rejected', 'published', 'closed'],
       default: 'pending',
     },
     housePoints: {

@@ -72,8 +72,8 @@ const Login = () => {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mx-auto flex items-center justify-center text-4xl mb-4">
-            🏛️
+          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full mx-auto flex items-center justify-center overflow-hidden mb-4">
+            <img src="/houses.png" alt="Houses Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-3xl font-bold text-white">House Event Management</h1>
           <p className="text-white/70 mt-2">CSD & CSIT Department</p>
@@ -140,60 +140,42 @@ const Login = () => {
             {!isLogin && (
               <>
                 <select
-                  name="role"
-                  value={form.role}
+                  name="houseId"
+                  value={form.houseId}
                   onChange={handleChange}
                   className="input-field"
+                  required
                 >
-                  <option value="student">Student</option>
-                  <option value="teamlead">Team Lead</option>
-                  <option value="mentor">Mentor</option>
-                  <option value="admin">Admin</option>
+                  <option value="">Select House</option>
+                  {houses.map((h) => (
+                    <option key={h._id} value={h._id}>
+                      {h.name}
+                    </option>
+                  ))}
                 </select>
 
-                {form.role !== 'admin' && (
-                  <select
-                    name="houseId"
-                    value={form.houseId}
-                    onChange={handleChange}
-                    className="input-field"
-                    required
-                  >
-                    <option value="">Select House</option>
-                    {houses.map((h) => (
-                      <option key={h._id} value={h._id}>
-                        {h.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-
-                {(form.role === 'student' || form.role === 'teamlead') && (
-                  <>
-                    <input
-                      type="text"
-                      name="regdNo"
-                      placeholder="Registration Number"
-                      value={form.regdNo}
-                      onChange={handleChange}
-                      className="input-field"
-                      required
-                    />
-                    <select
-                      name="year"
-                      value={form.year}
-                      onChange={handleChange}
-                      className="input-field"
-                      required
-                    >
-                      <option value="">Select Year</option>
-                      <option value="1">1st Year</option>
-                      <option value="2">2nd Year</option>
-                      <option value="3">3rd Year</option>
-                      <option value="4">4th Year</option>
-                    </select>
-                  </>
-                )}
+                <input
+                  type="text"
+                  name="regdNo"
+                  placeholder="Registration Number"
+                  value={form.regdNo}
+                  onChange={handleChange}
+                  className="input-field"
+                  required
+                />
+                <select
+                  name="year"
+                  value={form.year}
+                  onChange={handleChange}
+                  className="input-field"
+                  required
+                >
+                  <option value="">Select Year</option>
+                  <option value="1">1st Year</option>
+                  <option value="2">2nd Year</option>
+                  <option value="3">3rd Year</option>
+                  <option value="4">4th Year</option>
+                </select>
 
                 <input
                   type="text"

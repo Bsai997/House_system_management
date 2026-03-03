@@ -181,6 +181,39 @@ exports.getEvent = async (req, res) => {
   }
 };
 
+// @desc    Close event (Team Lead only, after publishing)
+// @route   PUT /api/events/:id/close
+exports.closeEvent = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ success: false, message: 'Event not found' });
+    }
+
+    if (event.status !== 'published') {
+      return res.status(400).json({
+        success: false,
+        message: 'Only published events can be closed',
+      });
+    }
+
+    if (event.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Only the event creator can close this event' });
+    }
+
+    event.status = 'closed';
+    await event.save();
+
+    const populated = await Event.findById(event._id)
+      .populate('houseId', 'name color logo')
+      .populate('createdBy', 'name email');
+
+    res.json({ success: true, event: populated });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // @desc    Get events for mentor's house (all statuses)
 // @route   GET /api/events/mentor/house
 exports.getMentorHouseEvents = async (req, res) => {

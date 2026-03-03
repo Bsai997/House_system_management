@@ -25,6 +25,7 @@ import TeamLeadLeaderboard from './pages/teamlead/TeamLeadLeaderboard';
 import MentorLayout from './pages/mentor/MentorLayout';
 import MentorApprovals from './pages/mentor/MentorApprovals';
 import MentorAboutHouse from './pages/mentor/MentorAboutHouse';
+import MentorLeaderboard from './pages/mentor/MentorLeaderboard';
 
 // Admin
 import AdminLayout from './pages/admin/AdminLayout';
@@ -108,6 +109,7 @@ function App() {
           >
             <Route index element={<MentorApprovals />} />
             <Route path="about-house" element={<MentorAboutHouse />} />
+            <Route path="leaderboard" element={<MentorLeaderboard />} />
           </Route>
 
           {/* Admin Routes */}

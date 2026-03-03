@@ -4,7 +4,7 @@ import { getAllHouses, getAdminHouseDashboard, getAdminHouseEvents } from '../..
 import DataTable from '../../components/DataTable';
 import EventCard from '../../components/EventCard';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
-import { getHouseColor, getHouseLogo, formatDate } from '../../utils/constants';
+import { getHouseColor, getHouseLogo, isImageLogo, formatDate } from '../../utils/constants';
 import toast from 'react-hot-toast';
 
 const AdminHouseView = () => {
@@ -98,8 +98,12 @@ const AdminHouseView = () => {
           ← Back to House {houseNameCapitalized}
         </button>
 
-        <h2 className="text-xl font-bold text-gray-900 mb-6">
-          {getHouseLogo(houseNameCapitalized)} House {houseNameCapitalized} - Events
+        <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+          {isImageLogo(houseNameCapitalized) ? (
+            <img src={getHouseLogo(houseNameCapitalized)} alt={houseNameCapitalized} className="w-8 h-8 rounded-full object-cover inline-block" />
+          ) : (
+            getHouseLogo(houseNameCapitalized)
+          )} House {houseNameCapitalized} - Events
         </h2>
 
         {/* Ongoing Events */}
@@ -114,25 +118,13 @@ const AdminHouseView = () => {
           </div>
         )}
 
-        {/* Previous Events */}
+        {/* Completed Events */}
         {events?.previous?.length > 0 && (
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">📜 Previous Events</h3>
-            <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">✅ Completed Events</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {events.previous.map((event) => (
-                <div key={event._id} className="card p-4 flex items-center justify-between">
-                  <div>
-                    <h4 className="font-semibold text-gray-900">{event.name}</h4>
-                    <div className="flex gap-4 text-sm text-gray-500 mt-1">
-                      <span>📍 {event.venue}</span>
-                      <span>📅 {formatDate(event.date)}</span>
-                      <span>🏆 {event.housePoints} pts</span>
-                    </div>
-                  </div>
-                  <span className="text-sm text-gray-400">
-                    {event.participationCount || 0} participants
-                  </span>
-                </div>
+                <EventCard key={event._id} event={event} />
               ))}
             </div>
           </div>
@@ -152,7 +144,11 @@ const AdminHouseView = () => {
     <div>
       {/* House Header */}
       <div className="flex items-center gap-3 mb-6">
-        <span className="text-3xl">{getHouseLogo(houseNameCapitalized)}</span>
+        {isImageLogo(houseNameCapitalized) ? (
+          <img src={getHouseLogo(houseNameCapitalized)} alt={houseNameCapitalized} className="w-10 h-10 rounded-full object-cover" />
+        ) : (
+          <span className="text-3xl">{getHouseLogo(houseNameCapitalized)}</span>
+        )}
         <h2 className="text-xl font-bold text-gray-900">House {houseNameCapitalized}</h2>
       </div>
 

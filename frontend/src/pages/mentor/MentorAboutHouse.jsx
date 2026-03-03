@@ -4,8 +4,12 @@ import DataTable from '../../components/DataTable';
 import EventCard from '../../components/EventCard';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import { useAuth } from '../../context/AuthContext';
-import { getHouseColor, formatDate } from '../../utils/constants';
+import { getHouseColor, getHouseLogo, isImageLogo, formatDate } from '../../utils/constants';
 import toast from 'react-hot-toast';
+import {
+  HiUsers, HiStar, HiTrendingUp, HiCalendar,
+  HiArrowLeft, HiChevronRight, HiClock, HiLocationMarker
+} from 'react-icons/hi';
 
 const MentorAboutHouse = () => {
   const { user } = useAuth();
@@ -13,7 +17,8 @@ const MentorAboutHouse = () => {
   const [events, setEvents] = useState([]);
   const [showEvents, setShowEvents] = useState(false);
   const [loading, setLoading] = useState(true);
-  const houseColors = getHouseColor(user?.house?.name);
+  const houseName = user?.house?.name;
+  const houseColors = getHouseColor(houseName);
 
   useEffect(() => {
     const fetch = async () => {
@@ -39,10 +44,10 @@ const MentorAboutHouse = () => {
   if (loading) return <LoadingSkeleton type="table" count={5} />;
 
   const ongoing = events.filter(
-    (e) => e.status === 'published' && new Date(e.date) >= new Date()
+    (e) => e.status === 'published'
   );
   const previous = events.filter(
-    (e) => e.status === 'published' && new Date(e.date) < new Date()
+    (e) => e.status === 'closed'
   );
 
   const columns = [
@@ -50,48 +55,93 @@ const MentorAboutHouse = () => {
       key: 'rank',
       label: 'Rank',
       sortable: true,
+      render: (row) => {
+        const medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
+        return (
+          <div className="flex items-center gap-2">
+            {row.rank <= 3 ? (
+              <span className="text-lg">{medals[row.rank]}</span>
+            ) : (
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-sm font-bold text-gray-500">
+                {row.rank}
+              </span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      key: 'name',
+      label: 'Student',
+      sortable: true,
       render: (row) => (
-        <span
-          className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${
-            row.rank <= 3 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'
-          }`}
-        >
-          {row.rank}
-        </span>
+        <div className="flex items-center gap-3">
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold"
+            style={{ backgroundColor: houseColors.primary }}
+          >
+            {row.name?.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <p className="font-semibold text-gray-900 text-sm">{row.name}</p>
+            <p className="text-xs text-gray-400">{row.regdNo}</p>
+          </div>
+        </div>
       ),
     },
-    { key: 'name', label: 'Name', sortable: true },
-    { key: 'regdNo', label: 'Regd No', sortable: true },
     { key: 'year', label: 'Year', sortable: true },
-    { key: 'department', label: 'Department' },
+    { key: 'department', label: 'Dept' },
     {
       key: 'totalPoints',
       label: 'Points',
       sortable: true,
       render: (row) => (
-        <span className="font-bold" style={{ color: houseColors.primary }}>
-          {row.totalPoints}
-        </span>
+        <div className="flex items-center gap-2">
+          <div className="flex-1 max-w-[80px] h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${Math.min((row.totalPoints / (dashboard?.students?.[0]?.totalPoints || 1)) * 100, 100)}%`,
+                backgroundColor: houseColors.primary,
+              }}
+            />
+          </div>
+          <span className="font-bold text-sm" style={{ color: houseColors.primary }}>
+            {row.totalPoints}
+          </span>
+        </div>
       ),
     },
   ];
 
+  // ── Events View ──
   if (showEvents) {
     return (
-      <div>
+      <div className="space-y-8">
         <button
           onClick={() => setShowEvents(false)}
-          className="mb-6 text-sm text-blue-600 hover:text-blue-800 font-medium"
+          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 font-medium transition-colors cursor-pointer"
         >
-          ← Back to About House
+          <HiArrowLeft className="w-4 h-4" />
+          Back to House Overview
         </button>
 
-        <h2 className="text-xl font-bold text-gray-900 mb-6">📅 House Events</h2>
+        <div className="flex items-center gap-3">
+          <div className="w-1 h-8 rounded-full bg-gradient-to-b" style={{ backgroundImage: `linear-gradient(to bottom, ${houseColors.primary}, ${houseColors.dark})` }} />
+          <h2 className="text-xl font-bold text-gray-900">House Events</h2>
+        </div>
 
         {/* Ongoing Events */}
         {ongoing.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">🟢 Ongoing Events</h3>
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              </span>
+              <h3 className="text-base font-semibold text-gray-800">Ongoing Events (Published)</h3>
+              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">{ongoing.length}</span>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {ongoing.map((event) => (
                 <EventCard key={event._id} event={event} />
@@ -100,90 +150,187 @@ const MentorAboutHouse = () => {
           </div>
         )}
 
-        {/* Previous Events */}
+        {/* Completed Events */}
         {previous.length > 0 && (
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">📜 Previous Events</h3>
-            <div className="space-y-3">
+            <div className="flex items-center gap-2 mb-4">
+              <HiClock className="w-4 h-4 text-gray-400" />
+              <h3 className="text-base font-semibold text-gray-800">Completed Events</h3>
+              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">{previous.length}</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {previous.map((event) => (
-                <div
-                  key={event._id}
-                  className="card p-4 flex items-center justify-between"
-                >
-                  <div>
-                    <h4 className="font-semibold text-gray-900">{event.name}</h4>
-                    <div className="flex gap-4 text-sm text-gray-500 mt-1">
-                      <span>📍 {event.venue}</span>
-                      <span>📅 {formatDate(event.date)}</span>
-                      <span>🏆 {event.housePoints} pts</span>
-                    </div>
-                  </div>
-                  <span className="text-sm text-gray-400">
-                    {event.participationCount || 0} participants
-                  </span>
-                </div>
+                <EventCard key={event._id} event={event} />
               ))}
             </div>
           </div>
         )}
 
         {ongoing.length === 0 && previous.length === 0 && (
-          <div className="text-center py-12 text-gray-400">
-            <p className="text-4xl mb-3">📭</p>
-            <p>No events found</p>
+          <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-50 flex items-center justify-center">
+              <HiCalendar className="w-8 h-8 text-gray-300" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-600 mb-1">No events yet</h3>
+            <p className="text-gray-400 text-sm">Events conducted by or for your house will appear here</p>
           </div>
         )}
       </div>
     );
   }
 
+  // ── Main House Overview ──
+  const statsCards = [
+    {
+      label: 'Total Students',
+      value: dashboard?.students?.length || 0,
+      icon: <HiUsers className="w-6 h-6" />,
+      gradient: houseColors.gradient,
+      bgLight: houseColors.bgLight,
+      textColor: houseColors.text,
+    },
+    {
+      label: 'Total Events',
+      value: events.length,
+      icon: <HiCalendar className="w-6 h-6" />,
+      gradient: 'from-blue-400 to-indigo-500',
+      bgLight: 'bg-blue-50',
+      textColor: 'text-blue-600',
+    },
+    {
+      label: 'Active Events',
+      value: ongoing.length,
+      icon: <HiTrendingUp className="w-6 h-6" />,
+      gradient: 'from-emerald-400 to-green-500',
+      bgLight: 'bg-emerald-50',
+      textColor: 'text-emerald-600',
+    },
+  ];
+
   return (
-    <div>
-      {/* Top Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {/* Left: Info */}
-        <div className="card p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">House Information</h3>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-gray-500">Mentor</span>
-              <span className="font-semibold">{dashboard?.house?.mentorId?.name || user?.name}</span>
+    <div className="space-y-8">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {statsCards.map((stat, i) => (
+          <div
+            key={i}
+            className="group relative bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className={`w-11 h-11 rounded-xl ${stat.bgLight} ${stat.textColor} flex items-center justify-center`}>
+                {stat.icon}
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Team Lead</span>
-              <span className="font-semibold">{dashboard?.house?.teamLeadId?.name || 'N/A'}</span>
+            <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+            <p className="text-sm text-gray-500 mt-0.5">{stat.label}</p>
+            <div className={`absolute bottom-0 left-4 right-4 h-0.5 rounded-full bg-gradient-to-r ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+          </div>
+        ))}
+      </div>
+
+      {/* House Info + Events Quick Access */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* House Info Card */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          <div className="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
+            <div className="w-1 h-6 rounded-full" style={{ backgroundColor: houseColors.primary }} />
+            <h3 className="text-base font-bold text-gray-900">House Information</h3>
+          </div>
+          <div className="p-6">
+            <div className="flex items-center gap-5 mb-6">
+              <div
+                className="w-16 h-16 rounded-full flex items-center justify-center text-3xl overflow-hidden"
+                style={{ backgroundColor: houseColors.primary + '15' }}
+              >
+                {isImageLogo(houseName) ? (
+                  <img src={getHouseLogo(houseName)} alt={houseName} className="w-full h-full object-cover" />
+                ) : (
+                  getHouseLogo(houseName)
+                )}
+              </div>
+              <div>
+                <h4 className="text-xl font-bold text-gray-900">House {houseName}</h4>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  <span className="font-bold text-lg" style={{ color: houseColors.primary }}>
+                    {dashboard?.house?.totalPoints || 0}
+                  </span>
+                  {' '}total points earned
+                </p>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Total Points</span>
-              <span className="font-bold text-xl" style={{ color: houseColors.primary }}>
-                {dashboard?.house?.totalPoints || 0}
-              </span>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-gray-50 rounded-xl p-4">
+                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Mentor</p>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                    style={{ backgroundColor: houseColors.primary }}
+                  >
+                    {(dashboard?.house?.mentorId?.name || user?.name)?.charAt(0).toUpperCase()}
+                  </div>
+                  <p className="font-semibold text-gray-900">{dashboard?.house?.mentorId?.name || user?.name}</p>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4">
+                <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Team Lead</p>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                    style={{ backgroundColor: houseColors.primary }}
+                  >
+                    {(dashboard?.house?.teamLeadId?.name || 'N')?.charAt(0).toUpperCase()}
+                  </div>
+                  <p className="font-semibold text-gray-900">{dashboard?.house?.teamLeadId?.name || 'Not Assigned'}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right: Events Button */}
-        <div className="card p-6 flex flex-col items-center justify-center">
-          <p className="text-4xl mb-3">📅</p>
-          <h3 className="text-lg font-semibold text-gray-700 mb-3">House Events</h3>
-          <button
-            onClick={() => setShowEvents(true)}
-            className="btn-primary"
-            style={{ backgroundColor: houseColors.primary }}
-          >
-            View Events →
-          </button>
+        {/* Events Quick Access */}
+        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col">
+          <div className="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
+            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-blue-400 to-indigo-500" />
+            <h3 className="text-base font-bold text-gray-900">Events</h3>
+          </div>
+          <div className="p-6 flex-1 flex flex-col items-center justify-center text-center">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center mb-4">
+              <HiCalendar className="w-8 h-8 text-blue-500" />
+            </div>
+            <p className="text-sm text-gray-500 mb-1">
+              <span className="font-bold text-gray-900 text-lg">{events.length}</span> total events
+            </p>
+            <p className="text-xs text-gray-400 mb-5">
+              {ongoing.length} ongoing · {previous.length} completed
+            </p>
+            <button
+              onClick={() => setShowEvents(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer btn-primary"
+            >
+              View All Events
+              <HiChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Students Table */}
+      {/* Student Rankings Table */}
       {dashboard && (
-        <DataTable
-          columns={columns}
-          data={dashboard.students}
-          searchFields={['name', 'regdNo', 'department']}
-          title={`House ${user?.house?.name} - Student Rankings`}
-        />
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-1 h-8 rounded-full" style={{ backgroundImage: `linear-gradient(to bottom, ${houseColors.primary}, ${houseColors.dark})` }} />
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">Student Rankings</h2>
+              <p className="text-sm text-gray-500">Performance leaderboard for House {houseName}</p>
+            </div>
+          </div>
+          <DataTable
+            columns={columns}
+            data={dashboard.students}
+            searchFields={['name', 'regdNo', 'department']}
+          />
+        </div>
       )}
     </div>
   );

@@ -37,6 +37,7 @@ export const getPublishedEvents = () => API.get('/events/published');
 export const getPendingEvents = () => API.get('/events/pending');
 export const approveEvent = (id, status) => API.put(`/events/${id}/approve`, { status });
 export const publishEvent = (id) => API.put(`/events/${id}/publish`);
+export const closeEvent = (id) => API.put(`/events/${id}/close`);
 export const getMyEvents = () => API.get('/events/my-events');
 export const getEvent = (id) => API.get(`/events/${id}`);
 export const getEventsByHouse = (houseId) => API.get(`/events/house/${houseId}`);
@@ -63,5 +64,6 @@ export const updateProfile = (data) => API.put('/users/profile', data);
 export const getGlobalDashboard = () => API.get('/admin/dashboard');
 export const getAdminHouseDashboard = (houseId) => API.get(`/admin/house/${houseId}`);
 export const getAdminHouseEvents = (houseId) => API.get(`/admin/house/${houseId}/events`);
+export const addMember = (data) => API.post('/admin/add-member', data);
 
 export default API;
