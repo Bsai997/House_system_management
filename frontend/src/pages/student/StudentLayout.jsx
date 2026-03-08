@@ -15,8 +15,8 @@ const StudentLayout = () => {
   const [profileOpen, setProfileOpen] = useState(false);
 
   return (
-    <div className="dashboard-container">
-      <HeroSection subtitle="Explore events and earn points for your house" />
+    <div className="min-h-screen bg-gray-50">
+      <HeroSection subtitle="Explore events and earn points for your house" onProfileClick={() => setProfileOpen(true)} />
       <FloatingNavbar menuItems={STUDENT_MENU} onProfileClick={() => setProfileOpen(true)} />
       <div className="dashboard-content">
         <Outlet />

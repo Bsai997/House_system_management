@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { HiMenu, HiX, HiUser } from 'react-icons/hi';
+import { HiMenu, HiX } from 'react-icons/hi';
 import { useState } from 'react';
 
 const FloatingNavbar = ({ menuItems, onProfileClick }) => {
@@ -24,10 +24,9 @@ const FloatingNavbar = ({ menuItems, onProfileClick }) => {
             to={item.path}
             className={`relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ease-out
               whitespace-nowrap overflow-visible
-              ${
-                isActive(item.path)
-                  ? 'text-white font-semibold bg-white/10'
-                  : 'text-gray-400 hover:text-white hover:scale-105'
+              ${isActive(item.path)
+                ? 'text-white font-semibold bg-white/10'
+                : 'text-gray-400 hover:text-white hover:scale-105'
               }`}
           >
             {/* Spotlight line attached just below the navbar */}
@@ -52,22 +51,6 @@ const FloatingNavbar = ({ menuItems, onProfileClick }) => {
         ))}
       </nav>
 
-      {/* Profile Button - floating right */}
-      {onProfileClick && (
-        <button
-          onClick={onProfileClick}
-          className="hidden md:flex absolute right-6 lg:right-10 w-10 h-10 rounded-full
-                     bg-gradient-to-r from-gray-900 via-gray-800 to-black
-                     backdrop-blur-lg shadow-[0_8px_32px_rgba(0,0,0,0.4)]
-                     border border-gray-700/50
-                     items-center justify-center text-gray-300
-                     hover:bg-white/20 hover:text-white hover:scale-110
-                     transition-all duration-300 cursor-pointer"
-          title="Open profile"
-        >
-          <HiUser size={18} />
-        </button>
-      )}
 
       {/* Mobile Navbar */}
       <div className="md:hidden w-full max-w-md">
@@ -80,16 +63,6 @@ const FloatingNavbar = ({ menuItems, onProfileClick }) => {
         >
           <span className="text-white text-sm font-semibold tracking-wide">Menu</span>
           <div className="flex items-center gap-2">
-            {onProfileClick && (
-              <button
-                onClick={onProfileClick}
-                className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center
-                           text-gray-300 hover:bg-white/20 hover:text-white transition-all duration-300"
-                title="Open profile"
-              >
-                <HiUser size={18} />
-              </button>
-            )}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center
@@ -117,10 +90,9 @@ const FloatingNavbar = ({ menuItems, onProfileClick }) => {
                   onClick={() => setMobileOpen(false)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
                     whitespace-nowrap
-                    ${
-                      isActive(item.path)
-                        ? 'text-white bg-white/15 font-semibold shadow-[0_0_12px_rgba(147,130,255,0.5)]'
-                        : 'text-gray-400 hover:text-white hover:bg-white/10'
+                    ${isActive(item.path)
+                      ? 'text-white bg-white/15 font-semibold shadow-[0_0_12px_rgba(147,130,255,0.5)]'
+                      : 'text-gray-400 hover:text-white hover:bg-white/10'
                     }`}
                 >
                   {item.label}

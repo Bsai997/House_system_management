@@ -59,10 +59,10 @@ export const HOUSE_COLORS = {
 
 export const HOUSE_LOGOS = {
   Jal: '/jal-logo.png',
-  Vayu: '🌬️',
+  Vayu: '/vayu-logo.png',
   Agni: '/agni-logo.png',
   Akash: '/akash-logo.png',
-  Prudhvi: '🌍',
+  Prudhvi: '/prudhvi-logo.png',
 };
 
 export const getHouseColor = (houseName) => {

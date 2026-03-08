@@ -19,6 +19,7 @@ const MentorLayout = () => {
     <div className="min-h-screen bg-gray-50">
       <HeroSection
         subtitle="Review events and monitor your house"
+        onProfileClick={() => setProfileOpen(true)}
         actionButton={
           <button
             onClick={() => setTeamLeadModalOpen(true)}
