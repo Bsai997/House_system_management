@@ -42,17 +42,17 @@ const StudentHome = () => {
   if (loading) return <LoadingSkeleton type="card" count={6} />;
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-900">📢 Ongoing Events</h2>
-        <span className="text-sm text-gray-500">{events.length} events</span>
+    <div className="dashboard-content">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="section-title">📢 Ongoing Events</h2>
+        <span className="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-lg">{events.length} events</span>
       </div>
 
       {events.length === 0 ? (
-        <div className="text-center py-20">
-          <p className="text-5xl mb-4">📭</p>
-          <h3 className="text-lg font-semibold text-gray-600">No events available</h3>
-          <p className="text-gray-400">Check back later for new events</p>
+        <div className="text-center py-24">
+          <p className="text-6xl mb-4">📭</p>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">No events available</h3>
+          <p className="text-gray-500">Check back later for new events</p>
         </div>
       ) : (
         <div className={`grid gap-6 ${events.length === 1 ? 'grid-cols-1 justify-items-center max-w-lg mx-auto' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
@@ -66,10 +66,10 @@ const StudentHome = () => {
                   <button
                     onClick={() => handleRegister(event._id)}
                     disabled={registering === event._id || isParticipant}
-                    className={`w-full py-2 rounded-lg font-semibold text-sm transition-all ${
+                    className={`w-full py-2.5 rounded-lg font-medium text-sm transition-colors ${
                       isParticipant
-                        ? 'bg-green-100 text-green-700 cursor-default'
-                        : 'btn-primary'
+                        ? 'bg-green-50 text-green-700 border border-green-100 cursor-default'
+                        : 'btn-primary disabled:opacity-50'
                     }`}
                   >
                     {registering === event._id
