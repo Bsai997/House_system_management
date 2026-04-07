@@ -23,9 +23,10 @@ const MentorLayout = () => {
         actionButton={
           <button
             onClick={() => setTeamLeadModalOpen(true)}
-            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-xl text-sm sm:text-base font-medium hover:bg-white/30 transition"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm sm:text-base font-medium hover:bg-white/30 transition"
           >
-            Add Team Lead
+            <span>＋</span>
+            <span>Add Team Lead</span>
           </button>
         }
       />

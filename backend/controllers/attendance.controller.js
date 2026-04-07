@@ -113,18 +113,32 @@ exports.markAttendance = async (req, res) => {
 // @route   GET /api/attendance/my-participations
 exports.getMyParticipations = async (req, res) => {
   try {
-    const participations = await Participation.find({
-      studentId: req.user._id,
-      status: 'present',
-    })
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
+
+    const filter = { studentId: req.user._id, status: 'present' };
+    const total = await Participation.countDocuments(filter);
+    const participations = await Participation.find(filter)
       .populate({
         path: 'eventId',
         select: 'name date houseId housePoints status',
         populate: { path: 'houseId', select: 'name color logo' },
       })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    res.json({ success: true, participations });
+    res.json({
+      success: true,
+      participations,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -9,16 +9,19 @@ const StudentHome = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [registering, setRegistering] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
   const { user } = useAuth();
 
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [page]);
 
   const fetchEvents = async () => {
     try {
-      const res = await getPublishedEvents();
+      const res = await getPublishedEvents(page);
       setEvents(res.data.events);
+      setPagination(res.data.pagination);
     } catch (err) {
       toast.error('Failed to load events');
     } finally {
@@ -55,34 +58,59 @@ const StudentHome = () => {
           <p className="text-gray-500">Check back later for new events</p>
         </div>
       ) : (
-        <div className={`grid gap-6 ${events.length === 1 ? 'grid-cols-1 justify-items-center max-w-lg mx-auto' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
-          {events.map((event) => {
-            const isParticipant = event.participants?.includes(user?.id);
-            return (
-              <EventCard
-                key={event._id}
-                event={event}
-                actions={
-                  <button
-                    onClick={() => handleRegister(event._id)}
-                    disabled={registering === event._id || isParticipant}
-                    className={`w-full py-2.5 rounded-lg font-medium text-sm transition-colors ${
-                      isParticipant
-                        ? 'bg-green-50 text-green-700 border border-green-100 cursor-default'
-                        : 'btn-primary disabled:opacity-50'
-                    }`}
-                  >
-                    {registering === event._id
-                      ? 'Registering...'
-                      : isParticipant
-                      ? '✓ Registered'
-                      : 'Register for Event'}
-                  </button>
-                }
-              />
-            );
-          })}
-        </div>
+        <>
+          <div className={`grid gap-6 ${events.length === 1 ? 'grid-cols-1 max-w-sm' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+            {events.map((event) => {
+              const isParticipant = event.participants?.includes(user?.id);
+              return (
+                <EventCard
+                  key={event._id}
+                  event={event}
+                  actions={
+                    <button
+                      onClick={() => handleRegister(event._id)}
+                      disabled={registering === event._id || isParticipant}
+                      className={`w-full py-2.5 rounded-lg font-medium text-sm transition-colors ${
+                        isParticipant
+                          ? 'bg-green-50 text-green-700 border border-green-100 cursor-default'
+                          : 'btn-primary disabled:opacity-50'
+                      }`}
+                    >
+                      {registering === event._id
+                        ? 'Registering...'
+                        : isParticipant
+                        ? '✓ Registered'
+                        : 'Register for Event'}
+                    </button>
+                  }
+                />
+              );
+            })}
+          </div>
+
+          {/* Pagination Controls */}
+          {pagination && pagination.pages > 1 && (
+            <div className="flex justify-center items-center gap-3 mt-8">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+              >
+                ← Previous
+              </button>
+              <span className="text-sm text-gray-600">
+                Page {pagination.page} of {pagination.pages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
+                disabled={page === pagination.pages}
+                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+              >
+                Next →
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

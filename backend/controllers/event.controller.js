@@ -1,6 +1,9 @@
 const Event = require('../models/Event');
 const House = require('../models/House');
 const Participation = require('../models/Participation');
+const axios = require('axios');
+
+const N8N_WEBHOOK_URL = 'http://localhost:5678/webhook-test/b378aa7b-c839-4600-9585-b23f3a0b66b7';
 
 // @desc    Create event (Team Lead only)
 // @route   POST /api/events
@@ -111,6 +114,26 @@ exports.publishEvent = async (req, res) => {
       .populate('houseId', 'name color logo')
       .populate('createdBy', 'name email');
 
+    // Trigger n8n webhook for email notifications about new event
+    try {
+      await axios.post(N8N_WEBHOOK_URL, {
+        type: 'EVENT_PUBLISHED',
+        eventName: populated.name,
+        eventDescription: populated.description,
+        eventVenue: populated.venue,
+        eventDate: populated.date,
+        eventPoster: populated.poster,
+        houseName: populated.houseId?.name || '',
+        houseColor: populated.houseId?.color || '',
+        housePoints: populated.housePoints,
+        publishedBy: populated.createdBy?.name || '',
+        createdAt: populated.createdAt,
+      });
+    } catch (webhookError) {
+      console.error('Webhook error (non-critical):', webhookError.message);
+      // webhook failure is non-critical
+    }
+
     res.json({ success: true, event: populated });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -121,12 +144,28 @@ exports.publishEvent = async (req, res) => {
 // @route   GET /api/events/published
 exports.getPublishedEvents = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
+
+    const total = await Event.countDocuments({ status: 'published' });
     const events = await Event.find({ status: 'published' })
       .populate('houseId', 'name color logo')
       .populate('createdBy', 'name email')
-      .sort({ date: -1 });
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    res.json({ success: true, events });
+    res.json({
+      success: true,
+      events,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -151,12 +190,28 @@ exports.getEventsByHouse = async (req, res) => {
 // @route   GET /api/events/my-events
 exports.getMyEvents = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
+
+    const total = await Event.countDocuments({ createdBy: req.user._id });
     const events = await Event.find({ createdBy: req.user._id })
       .populate('houseId', 'name color logo')
       .populate('createdBy', 'name email')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    res.json({ success: true, events });
+    res.json({
+      success: true,
+      events,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -207,6 +262,27 @@ exports.closeEvent = async (req, res) => {
     const populated = await Event.findById(event._id)
       .populate('houseId', 'name color logo')
       .populate('createdBy', 'name email');
+
+    // Trigger n8n webhook to send event completion emails to all students
+    try {
+      const participantsCount = populated.participants?.length || 0;
+      
+      await axios.post(N8N_WEBHOOK_URL, {
+        type: 'EVENT_CLOSED',
+        eventName: populated.name,
+        eventDescription: populated.description,
+        eventVenue: populated.venue,
+        eventDate: populated.date,
+        houseName: populated.houseId?.name || '',
+        housePoints: populated.housePoints,
+        conductedBy: populated.createdBy?.name || '',
+        participantsCount: participantsCount,
+        closedAt: new Date().toISOString(),
+      });
+    } catch (webhookError) {
+      console.error('Webhook error (non-critical):', webhookError.message);
+      // webhook failure is non-critical
+    }
 
     res.json({ success: true, event: populated });
   } catch (error) {

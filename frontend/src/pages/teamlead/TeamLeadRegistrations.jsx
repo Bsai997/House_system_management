@@ -16,7 +16,7 @@ const TeamLeadRegistrations = () => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await getMyEvents();
+        const res = await getMyEvents(1, 100);
         const publishedEvents = res.data.events.filter((e) => e.status === 'published');
         setEvents(publishedEvents);
       } catch {

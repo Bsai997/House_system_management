@@ -29,7 +29,7 @@ const MentorLeaderboard = () => {
       <h2 className="text-xl font-bold text-gray-900 mb-4 text-center">🏆 Global House Leaderboard</h2>
       <div className="flex justify-center w-full">
         {houses && (
-          <div className="w-full max-w-4xl">
+          <div className="w-full max-w-3xl">
             <LeaderboardCard houses={houses} />
           </div>
         )}

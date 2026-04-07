@@ -1,10 +1,38 @@
+// @desc    Logout user (invalidate token)
+// @route   POST /api/auth/logout
+exports.logout = async (req, res) => {
+  try {
+    res.cookie('token', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+      expires: new Date(0),
+    });
+    res.json({
+      success: true,
+      message: 'Logged out successfully',
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const House = require('../models/House');
 
 // Generate JWT token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE || '7d' });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE || '1d' });
+};
+
+// Helper to set token cookie on response
+// Session cookie (no maxAge/expires) — cleared when browser closes
+const setTokenCookie = (res, token) => {
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+  });
 };
 
 // @desc    Register user
@@ -50,6 +78,8 @@ exports.register = async (req, res) => {
 
     const populatedUser = await User.findById(user._id).populate('houseId');
 
+    setTokenCookie(res, token);
+
     res.status(201).json({
       success: true,
       token,
@@ -91,6 +121,8 @@ exports.login = async (req, res) => {
     }
 
     const token = generateToken(user._id);
+
+    setTokenCookie(res, token);
 
     res.json({
       success: true,

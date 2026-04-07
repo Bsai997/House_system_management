@@ -7,10 +7,11 @@ const {
   addMember,
 } = require('../controllers/admin.controller');
 const { protect, authorize } = require('../middleware/auth');
+const { validateAddMember, validateHouseIdParam } = require('../middleware/validate');
 
 router.get('/dashboard', protect, authorize('admin'), getGlobalDashboard);
-router.get('/house/:houseId', protect, authorize('admin'), getAdminHouseDashboard);
-router.get('/house/:houseId/events', protect, authorize('admin'), getAdminHouseEvents);
-router.post('/add-member', protect, authorize('admin', 'mentor'), addMember);
+router.get('/house/:houseId', protect, authorize('admin'), validateHouseIdParam, getAdminHouseDashboard);
+router.get('/house/:houseId/events', protect, authorize('admin'), validateHouseIdParam, getAdminHouseEvents);
+router.post('/add-member', protect, authorize('admin', 'mentor'), validateAddMember, addMember);
 
 module.exports = router;

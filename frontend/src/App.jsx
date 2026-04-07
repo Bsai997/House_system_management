@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Pages
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
+import ExplorePage from './pages/ExplorePage';
 
 // Student
 import StudentLayout from './pages/student/StudentLayout';
@@ -67,6 +68,7 @@ function App() {
         <Routes>
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/explore" element={<ExplorePage />} />
 
           {/* Student Routes */}
           <Route
