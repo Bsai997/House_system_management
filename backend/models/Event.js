@@ -43,6 +43,16 @@ const eventSchema = new mongoose.Schema(
       required: [true, 'House points are required'],
       min: 0,
     },
+    participationPoints: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    winningPoints: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     participants: [
       {
         type: mongoose.Schema.Types.ObjectId,

@@ -1,10 +1,19 @@
 import { formatDate, getStatusColor } from '../utils/constants';
 
+import { useState } from 'react';
+
 const EventCard = ({ event, actions, showPoster = true }) => {
+  const [showFullDesc, setShowFullDesc] = useState(false);
+  const descLimit = 100;
+  const isLongDesc = event.description && event.description.length > descLimit;
+  const descToShow = showFullDesc || !isLongDesc
+    ? event.description
+    : event.description.slice(0, descLimit) + '...';
+
   return (
     <div className="card hover:shadow-lg transition-shadow duration-300">
       {showPoster && event.poster && (
-        <div className="h-48 overflow-hidden">
+        <div className="h-72 max-w-lg mx-auto overflow-hidden">
           <img
             src={event.poster}
             alt={event.name}
@@ -23,7 +32,25 @@ const EventCard = ({ event, actions, showPoster = true }) => {
             {getStatusColor(event.status).label}
           </span>
         </div>
-        <p className="text-sm font-bold text-gray-600 mb-3 line-clamp-2">{event.description}</p>
+        <p className="text-sm font-bold text-gray-600 mb-3">
+          {descToShow}
+          {isLongDesc && !showFullDesc && (
+            <button
+              className="ml-2 text-blue-600 hover:underline text-xs font-semibold"
+              onClick={() => setShowFullDesc(true)}
+            >
+              Read more
+            </button>
+          )}
+          {isLongDesc && showFullDesc && (
+            <button
+              className="ml-2 text-blue-600 hover:underline text-xs font-semibold"
+              onClick={() => setShowFullDesc(false)}
+            >
+              Show less
+            </button>
+          )}
+        </p>
         <div className="space-y-1.5 text-sm text-gray-500">
           <div className="flex items-center gap-2">
             <span><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#B89230"><path d="M536.5-503.5Q560-527 560-560t-23.5-56.5Q513-640 480-640t-56.5 23.5Q400-593 400-560t23.5 56.5Q447-480 480-480t56.5-23.5ZM480-186q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z"/></svg></span>

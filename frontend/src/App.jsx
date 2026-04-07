@@ -4,7 +4,9 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
+import ExplorePage from './pages/ExplorePage';
 
 // Student
 import StudentLayout from './pages/student/StudentLayout';
@@ -44,7 +46,7 @@ const RootRedirect = () => {
     );
   }
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <LandingPage />;
   return <Navigate to={`/${user.role}`} replace />;
 };
 
@@ -66,6 +68,7 @@ function App() {
         <Routes>
           <Route path="/" element={<RootRedirect />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/explore" element={<ExplorePage />} />
 
           {/* Student Routes */}
           <Route

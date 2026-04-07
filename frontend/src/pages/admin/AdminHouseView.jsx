@@ -28,44 +28,12 @@ function AnimNum({ val }) {
 /* ─── House Stat Mini Card ─── */
 function MiniStat({ icon, label, value, color }) {
   return (
-    <div style={{
-      background: 'rgba(255,255,255,0.04)',
-      border: `1px solid ${color}25`,
-      borderRadius: '14px',
-      padding: '18px 20px',
-      flex: 1,
-      position: 'relative', overflow: 'hidden',
-      transition: 'all 0.3s ease', cursor: 'default',
-    }}
-      onMouseEnter={e => {
-        e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-        e.currentTarget.style.transform = 'translateY(-3px)';
-        e.currentTarget.style.boxShadow = `0 12px 30px rgba(0,0,0,0.3), 0 0 20px ${color}20`;
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = 'none';
-      }}
-    >
-      <div style={{
-        position: 'absolute', top: '-20px', right: '-20px',
-        width: '70px', height: '70px',
-        background: `radial-gradient(circle, ${color}25, transparent 70%)`,
-        borderRadius: '50%',
-      }} />
-      <div style={{ fontSize: '20px', marginBottom: '8px' }}>{icon}</div>
-      <div style={{
-        fontSize: '28px', fontWeight: '800', lineHeight: 1, marginBottom: '4px',
-        color: color, fontVariantNumeric: 'tabular-nums',
-      }}>
-        <AnimNum val={value} />
-      </div>
-      <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px', margin: 0, fontWeight: '500' }}>{label}</p>
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px',
-        background: `linear-gradient(90deg, transparent, ${color}60, transparent)`,
-      }} />
+    <div className="flex-1 min-w-[calc(50%-6px)] sm:min-w-0 rounded-xl sm:rounded-2xl p-4 sm:p-5 bg-white/95 backdrop-blur-sm border border-purple-100/60 shadow-lg shadow-purple-200/40 hover:shadow-xl hover:shadow-purple-300/50 hover:-translate-y-1 transition-all duration-300 cursor-default relative overflow-hidden">
+      <div className="absolute -top-5 -right-5 w-[70px] h-[70px] rounded-full opacity-50" style={{ background: `radial-gradient(circle, ${color}40, transparent 70%)` }} />
+      <div className="text-xl mb-2">{icon}</div>
+      <div className="text-2xl font-extrabold leading-none mb-1 tabular-nums" style={{ color }}><AnimNum val={value} /></div>
+      <p className="text-gray-500 text-xs m-0 font-medium">{label}</p>
+      <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ background: `linear-gradient(90deg, transparent, ${color}80, transparent)` }} />
     </div>
   );
 }
@@ -112,86 +80,37 @@ function StudentTable({ students, houseColors }) {
   };
 
   return (
-    <div style={{
-      background: 'rgba(255,255,255,0.02)',
-      border: '1px solid rgba(255,255,255,0.07)',
-      borderRadius: '20px',
-      overflow: 'hidden',
-      backdropFilter: 'blur(20px)',
-    }}>
-      {/* Table header */}
-      <div style={{
-        padding: '20px 24px',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px',
-        flexWrap: 'wrap',
-        background: 'rgba(255,255,255,0.02)',
-      }}>
+    <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-purple-100/60 shadow-xl shadow-purple-200/40 overflow-hidden">
+      <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-purple-100/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 flex-wrap bg-white/50">
         <div>
-          <h3 style={{ color: 'rgba(255,255,255,0.9)', fontWeight: '700', fontSize: '16px', margin: '0 0 2px' }}>
-            🎓 Student Members
-          </h3>
-          <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '12px', margin: 0 }}>
-            {sorted.length} of {students.length} members
-          </p>
+          <h3 className="font-bold text-gray-900 text-base m-0 mb-0.5">🎓 Student Members</h3>
+          <p className="text-gray-500 text-xs m-0">{sorted.length} of {students.length} members</p>
         </div>
-        <div style={{ position: 'relative' }}>
-          <HiSearch style={{
-            position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)',
-            color: 'rgba(255,255,255,0.35)', fontSize: '16px',
-          }} />
+        <div className="relative">
+          <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
             placeholder="Search students..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{
-              padding: '9px 14px 9px 36px',
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              borderRadius: '10px', color: 'rgba(255,255,255,0.85)',
-              fontSize: '13px', outline: 'none', width: '220px',
-              transition: 'all 0.2s',
-            }}
-            onFocus={e => {
-              e.target.style.borderColor = houseColors.primary + '60';
-              e.target.style.boxShadow = `0 0 0 3px ${houseColors.primary}15`;
-            }}
-            onBlur={e => {
-              e.target.style.borderColor = 'rgba(255,255,255,0.1)';
-              e.target.style.boxShadow = 'none';
-            }}
+            className="pl-10 pr-4 py-2.5 w-full sm:w-56 bg-white border border-gray-200 rounded-xl text-gray-800 text-sm outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
           />
         </div>
       </div>
-
-      {/* Table */}
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[600px] border-collapse">
           <thead>
-            <tr style={{ background: 'rgba(255,255,255,0.03)' }}>
+            <tr className="bg-gray-50">
               {cols.map(col => (
                 <th
                   key={col.key}
                   onClick={() => col.sortable && handleSort(col.key)}
-                  style={{
-                    padding: '12px 20px',
-                    textAlign: 'left',
-                    fontSize: '11px', fontWeight: '700',
-                    color: sortField === col.key ? houseColors.primary : 'rgba(255,255,255,0.35)',
-                    textTransform: 'uppercase', letterSpacing: '0.8px',
-                    cursor: col.sortable ? 'pointer' : 'default',
-                    userSelect: 'none',
-                    borderBottom: '1px solid rgba(255,255,255,0.05)',
-                    whiteSpace: 'nowrap',
-                    transition: 'color 0.2s',
-                  }}
+                  className={`px-3 sm:px-5 py-2.5 sm:py-3 text-left text-[10px] sm:text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-colors select-none border-b border-gray-100 ${col.sortable ? 'cursor-pointer' : 'cursor-default'}`}
+                  style={{ color: sortField === col.key ? houseColors.primary : undefined }}
                 >
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <span className="inline-flex items-center gap-1">
                     {col.label}
-                    {col.sortable && sortField === col.key && (
-                      <span style={{ color: houseColors.primary }}>{sortDir === 'asc' ? ' ↑' : ' ↓'}</span>
-                    )}
+                    {col.sortable && sortField === col.key && <span style={{ color: houseColors.primary }}>{sortDir === 'asc' ? ' ↑' : ' ↓'}</span>}
                   </span>
                 </th>
               ))}
@@ -200,71 +119,26 @@ function StudentTable({ students, houseColors }) {
           <tbody>
             {sorted.length === 0 ? (
               <tr>
-                <td colSpan={cols.length} style={{
-                  padding: '48px 20px', textAlign: 'center',
-                  color: 'rgba(255,255,255,0.25)', fontSize: '14px',
-                }}>
-                  <div style={{ fontSize: '36px', marginBottom: '10px' }}>🔍</div>
-                  No students found
+                <td colSpan={cols.length} className="py-12 px-5 text-center text-gray-500 text-sm">
+                  <div className="text-4xl mb-2">🔍</div>No students found
                 </td>
               </tr>
             ) : sorted.map((row, idx) => (
-              <tr
-                key={row._id || idx}
-                style={{
-                  borderBottom: '1px solid rgba(255,255,255,0.04)',
-                  transition: 'background 0.2s',
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-              >
-                {/* Rank */}
-                <td style={{ padding: '14px 20px' }}>
-                  <div style={{
-                    width: '32px', height: '32px', borderRadius: '50%',
-                    background: row.rank <= 3
-                      ? 'linear-gradient(135deg, rgba(251,191,36,0.3), rgba(245,158,11,0.15))'
-                      : 'rgba(255,255,255,0.05)',
-                    border: row.rank <= 3 ? '1px solid rgba(251,191,36,0.3)' : '1px solid rgba(255,255,255,0.08)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '13px', fontWeight: '700',
-                    color: row.rank <= 3 ? '#F59E0B' : 'rgba(255,255,255,0.5)',
-                  }}>
-                    {row.rank <= 3 ? ['🥇', '🥈', '🥉'][row.rank - 1] : row.rank}
+              <tr key={row._id || idx} className="border-b border-gray-50 hover:bg-purple-50/50 transition-colors">
+                <td className="px-3 sm:px-5 py-2.5 sm:py-3.5">
+                  <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold ${row.rank <= 3 ? 'bg-amber-50 text-amber-600 border border-amber-200' : 'bg-gray-100 text-gray-500'}`}>
+                    {row.rank <= 3 ? ['1', '2', '3'][row.rank - 1] : row.rank}
                   </div>
                 </td>
-                {/* Name */}
-                <td style={{ padding: '14px 20px', color: 'rgba(255,255,255,0.85)', fontSize: '14px', fontWeight: '600' }}>
-                  {row.name}
+                <td className="px-3 sm:px-5 py-2.5 sm:py-3.5 text-xs sm:text-sm font-semibold text-gray-900">{row.name}</td>
+                <td className="px-3 sm:px-5 py-2.5 sm:py-3.5 text-xs sm:text-sm text-gray-500 font-mono">{row.regdNo}</td>
+                <td className="px-3 sm:px-5 py-2.5 sm:py-3.5">
+                  <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold" style={{ background: `${houseColors.primary}20`, color: houseColors.primary }}> {row.year}</span>
                 </td>
-                {/* Regd */}
-                <td style={{ padding: '14px 20px', color: 'rgba(255,255,255,0.45)', fontSize: '13px', fontFamily: 'monospace' }}>
-                  {row.regdNo}
-                </td>
-                {/* Year */}
-                <td style={{ padding: '14px 20px' }}>
-                  <span style={{
-                    padding: '3px 10px', borderRadius: '50px',
-                    background: `${houseColors.primary}18`,
-                    color: houseColors.primary,
-                    fontSize: '12px', fontWeight: '600',
-                  }}>
-                    Year {row.year}
-                  </span>
-                </td>
-                {/* Department */}
-                <td style={{ padding: '14px 20px', color: 'rgba(255,255,255,0.45)', fontSize: '13px' }}>
-                  {row.department}
-                </td>
-                {/* Points */}
-                <td style={{ padding: '14px 20px' }}>
-                  <span style={{
-                    fontSize: '16px', fontWeight: '800', color: houseColors.primary,
-                    fontVariantNumeric: 'tabular-nums',
-                  }}>
-                    {row.totalPoints}
-                  </span>
-                  <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: '11px', marginLeft: '3px' }}>pts</span>
+                <td className="px-3 sm:px-5 py-2.5 sm:py-3.5 text-xs sm:text-sm text-gray-500">{row.department}</td>
+                <td className="px-3 sm:px-5 py-2.5 sm:py-3.5">
+                  <span className="text-sm sm:text-base font-extrabold tabular-nums" style={{ color: houseColors.primary }}>{row.totalPoints}</span>
+                  <span className="text-gray-400 text-xs ml-1">pts</span>
                 </td>
               </tr>
             ))}
@@ -315,9 +189,9 @@ const AdminHouseView = () => {
   if (loading) return <div style={{ padding: '20px' }}><LoadingSkeleton type="table" count={5} /></div>;
 
   if (!house) return (
-    <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-      <div style={{ fontSize: '64px', marginBottom: '16px' }}>❓</div>
-      <h3 style={{ color: 'rgba(255,255,255,0.5)', fontSize: '18px', fontWeight: '600' }}>House not found</h3>
+    <div className="text-center py-20">
+      <div className="text-6xl mb-4">❓</div>
+      <h3 className="text-gray-500 text-lg font-semibold">House not found</h3>
     </div>
   );
 
@@ -329,60 +203,34 @@ const AdminHouseView = () => {
       {/* Back button */}
       <button
         onClick={() => setShowEvents(false)}
-        style={{
-          display: 'inline-flex', alignItems: 'center', gap: '8px',
-          marginBottom: '28px', background: 'rgba(255,255,255,0.06)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '50px', padding: '8px 18px',
-          color: 'rgba(255,255,255,0.7)', fontSize: '13px', fontWeight: '600',
-          cursor: 'pointer', transition: 'all 0.2s',
-        }}
-        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'white'; }}
-        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
+        className="inline-flex items-center gap-2 mb-7 px-5 py-2 bg-white/80 hover:bg-white text-purple-700 rounded-full font-semibold text-sm border border-purple-100 shadow-md transition-all duration-300 hover:scale-105"
       >
         ← Back to House {houseNameCap}
       </button>
 
       {/* Events header */}
-      <div className="fu" style={{
-        display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '32px',
-      }}>
-        <div style={{
-          width: '52px', height: '52px', borderRadius: '50%', overflow: 'hidden',
-          background: `linear-gradient(135deg, ${houseColors.primary}, ${houseColors.dark})`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '24px', flexShrink: 0,
-          boxShadow: `0 4px 20px ${houseColors.primary}40`,
-        }}>
-          {isImageLogo(houseNameCap)
-            ? <img src={getHouseLogo(houseNameCap)} alt={houseNameCap} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            : getHouseLogo(houseNameCap)}
+      <div className="fu flex items-center gap-4 mb-8">
+        <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center text-2xl shrink-0" style={{ background: `linear-gradient(135deg, ${houseColors.primary}, ${houseColors.dark})`, boxShadow: `0 4px 20px ${houseColors.primary}50` }}>
+          {isImageLogo(houseNameCap) ? <img src={getHouseLogo(houseNameCap)} alt={houseNameCap} className="w-full h-full object-cover" /> : getHouseLogo(houseNameCap)}
         </div>
         <div>
-          <h2 style={{ color: 'rgba(255,255,255,0.9)', fontSize: '22px', fontWeight: '800', margin: '0 0 2px' }}>
-            House {houseNameCap} · Events
-          </h2>
-          <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '13px', margin: 0, fontWeight: '500' }}>
-            {(events?.all?.length || 0)} total events
-          </p>
+          <h2 className="text-gray-900 text-xl font-extrabold m-0 mb-0.5">House {houseNameCap} · Events</h2>
+          <p className="text-gray-500 text-sm m-0 font-medium">{(events?.all?.length || 0)} total events</p>
         </div>
       </div>
 
       {/* Ongoing */}
       {events?.ongoing?.length > 0 && (
-        <div className="fu" style={{ marginBottom: '36px', animationDelay: '100ms' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
-            <div style={{
-              width: '10px', height: '10px', borderRadius: '50%', background: '#22c55e',
-              boxShadow: '0 0 8px rgba(34,197,94,0.8)',
-              animation: 'pulse 2s ease-in-out infinite',
-            }} />
-            <h3 style={{ color: 'rgba(255,255,255,0.8)', fontSize: '16px', fontWeight: '700', margin: 0 }}>
-              Ongoing Events <span style={{ color: 'rgba(255,255,255,0.3)', fontWeight: '400' }}>({events.ongoing.length})</span>
-            </h3>
+        <div className="fu mb-9" style={{ animationDelay: '100ms' }}>
+          <div className="flex items-center gap-3 mb-4">
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+            </span>
+            <h3 className="text-gray-900 text-base font-bold m-0">Ongoing Events <span className="text-gray-400 font-normal">({events.ongoing.length})</span></h3>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
-            {events.ongoing.map(ev => <EventCard key={ev._id} event={ev} />)}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.ongoing.map(ev => <EventCard key={ev._id} event={ev} variant="purple" />)}
           </div>
         </div>
       )}
@@ -390,22 +238,20 @@ const AdminHouseView = () => {
       {/* Completed */}
       {events?.previous?.length > 0 && (
         <div className="fu" style={{ animationDelay: '200ms' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
-            <span style={{ fontSize: '18px' }}>✅</span>
-            <h3 style={{ color: 'rgba(255,255,255,0.8)', fontSize: '16px', fontWeight: '700', margin: 0 }}>
-              Completed Events <span style={{ color: 'rgba(255,255,255,0.3)', fontWeight: '400' }}>({events.previous.length})</span>
-            </h3>
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-lg">✅</span>
+            <h3 className="text-gray-900 text-base font-bold m-0">Completed Events <span className="text-gray-400 font-normal">({events.previous.length})</span></h3>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
-            {events.previous.map(ev => <EventCard key={ev._id} event={ev} />)}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.previous.map(ev => <EventCard key={ev._id} event={ev} variant="purple" />)}
           </div>
         </div>
       )}
 
       {events?.ongoing?.length === 0 && events?.previous?.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '80px 20px', color: 'rgba(255,255,255,0.25)' }}>
-          <div style={{ fontSize: '56px', marginBottom: '14px' }}>📭</div>
-          <p style={{ fontSize: '16px', fontWeight: '600' }}>No events found for this house</p>
+        <div className="text-center py-20">
+          <div className="text-5xl mb-3">📭</div>
+          <p className="text-gray-500 text-base font-semibold">No events found for this house</p>
         </div>
       )}
     </div>
@@ -421,85 +267,41 @@ const AdminHouseView = () => {
       `}</style>
 
       {/* House hero banner */}
-      <div className="fu" style={{
-        background: `linear-gradient(135deg, ${houseColors.primary}20, ${houseColors.dark}10)`,
-        border: `1px solid ${houseColors.primary}30`,
-        borderRadius: '24px', padding: '32px 36px',
-        marginBottom: '28px', position: 'relative', overflow: 'hidden',
-      }}>
-        {/* Decorative glow */}
-        <div style={{
-          position: 'absolute', top: '-50%', right: '-10%',
-          width: '300px', height: '300px',
-          background: `radial-gradient(circle, ${houseColors.primary}25, transparent 70%)`,
-          borderRadius: '50%', animation: 'houseGlow 4s ease-in-out infinite',
-        }} />
-        <div style={{
-          position: 'absolute', bottom: '-30%', left: '20%',
-          width: '200px', height: '200px',
-          background: `radial-gradient(circle, ${houseColors.dark}20, transparent 70%)`,
-          borderRadius: '50%',
-        }} />
-
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '20px' }}>
-          {/* House emblem */}
-          <div style={{
-            width: '72px', height: '72px', borderRadius: '50%', flexShrink: 0,
-            background: `linear-gradient(135deg, ${houseColors.primary}, ${houseColors.dark})`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '32px', overflow: 'hidden',
-            boxShadow: `0 8px 30px ${houseColors.primary}50`,
-            border: `2px solid ${houseColors.primary}50`,
-          }}>
-            {isImageLogo(houseNameCap)
-              ? <img src={getHouseLogo(houseNameCap)} alt={houseNameCap} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : <span style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}>{getHouseLogo(houseNameCap)}</span>}
+      <div
+        className="fu rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 mb-5 sm:mb-7 relative overflow-hidden bg-white/95 backdrop-blur-sm border border-purple-100/60 shadow-xl"
+        style={{ borderColor: `${houseColors.primary}30`, boxShadow: `0 20px 40px -12px ${houseColors.primary}20` }}
+      >
+        <div className="absolute -top-1/2 -right-[10%] w-[200px] h-[200px] sm:w-[300px] sm:h-[300px] rounded-full opacity-30" style={{ background: `radial-gradient(circle, ${houseColors.primary}40, transparent 70%)` }} />
+        <div className="relative flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
+          <div className="flex items-center gap-4 sm:flex-1">
+          <div
+            className="w-14 h-14 sm:w-[72px] sm:h-[72px] rounded-full flex items-center justify-center text-2xl sm:text-3xl overflow-hidden shrink-0"
+            style={{ background: `linear-gradient(135deg, ${houseColors.primary}, ${houseColors.dark})`, boxShadow: `0 8px 30px ${houseColors.primary}50` }}
+          >
+            {isImageLogo(houseNameCap) ? <img src={getHouseLogo(houseNameCap)} alt={houseNameCap} className="w-full h-full object-cover" /> : getHouseLogo(houseNameCap)}
           </div>
-
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-              <h1 style={{
-                fontSize: '28px', fontWeight: '900', margin: 0,
-                color: 'rgba(255,255,255,0.95)',
-              }}>
-                House {houseNameCap}
-              </h1>
-              <span style={{
-                padding: '4px 12px', borderRadius: '50px', fontSize: '11px', fontWeight: '700',
-                background: `${houseColors.primary}25`,
-                color: houseColors.primary,
-                border: `1px solid ${houseColors.primary}40`,
-                letterSpacing: '0.5px',
-              }}>ACTIVE</span>
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-gray-900 m-0">House {houseNameCap}</h1>
+              <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold shrink-0" style={{ background: `${houseColors.primary}25`, color: houseColors.primary, border: `1px solid ${houseColors.primary}40` }}>ACTIVE</span>
             </div>
-            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px', margin: 0, fontWeight: '500' }}>
-              Mentor: <span style={{ color: 'rgba(255,255,255,0.7)' }}>{house.mentorId?.name || 'N/A'}</span>
-              &nbsp;·&nbsp; Team Lead: <span style={{ color: 'rgba(255,255,255,0.7)' }}>{house.teamLeadId?.name || 'N/A'}</span>
+            <p className="text-gray-500 text-xs sm:text-sm m-0 font-medium truncate sm:whitespace-normal">
+              Mentor: <span className="text-gray-700">{house.mentorId?.name || 'N/A'}</span>
+              {' · '} Team Lead: <span className="text-gray-700">{house.teamLeadId?.name || 'N/A'}</span>
             </p>
           </div>
-
-          {/* Total points big display */}
-          <div style={{ textAlign: 'right', flexShrink: 0 }}>
-            <div style={{
-              fontSize: '48px', fontWeight: '900', lineHeight: 1,
-              background: `linear-gradient(135deg, ${houseColors.primary}, ${houseColors.dark})`,
-              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-              fontVariantNumeric: 'tabular-nums',
-            }}>
+          </div>
+          <div className="text-left sm:text-right shrink-0 border-t border-purple-100/40 pt-4 sm:border-0 sm:pt-0">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-black leading-none tabular-nums" style={{ background: `linear-gradient(135deg, ${houseColors.primary}, ${houseColors.dark})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               {house.totalPoints || 0}
             </div>
-            <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', margin: '2px 0 0', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>
-              Total Points
-            </p>
+            <p className="text-gray-500 text-xs mt-1 font-semibold uppercase tracking-wider">Total Points</p>
           </div>
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="fu" style={{
-        display: 'flex', gap: '16px', marginBottom: '28px', flexWrap: 'wrap',
-        animationDelay: '100ms',
-      }}>
+      <div className="fu flex gap-3 sm:gap-4 mb-5 sm:mb-7 flex-wrap" style={{ animationDelay: '100ms' }}>
         <MiniStat icon="🎓" label="Students" value={students.length} color={houseColors.primary} />
         <MiniStat icon="📅" label="Total Events" value={events?.all?.length || 0} color="#F59E0B" />
         <MiniStat icon="🔥" label="Ongoing Events" value={events?.ongoing?.length || 0} color="#22C55E" />
@@ -507,32 +309,15 @@ const AdminHouseView = () => {
       </div>
 
       {/* View Events button */}
-      <div className="fu" style={{ marginBottom: '28px', animationDelay: '200ms' }}>
+      <div className="fu mb-7" style={{ animationDelay: '200ms' }}>
         <button
           onClick={() => setShowEvents(true)}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: '10px',
-            padding: '12px 28px',
-            background: `linear-gradient(135deg, ${houseColors.primary}, ${houseColors.dark})`,
-            border: 'none', borderRadius: '14px',
-            color: 'white', fontSize: '14px', fontWeight: '700',
-            cursor: 'pointer', letterSpacing: '0.3px',
-            boxShadow: `0 6px 20px ${houseColors.primary}40`,
-            transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-            position: 'relative', overflow: 'hidden',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-            e.currentTarget.style.boxShadow = `0 12px 30px ${houseColors.primary}60`;
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.transform = 'translateY(0) scale(1)';
-            e.currentTarget.style.boxShadow = `0 6px 20px ${houseColors.primary}40`;
-          }}
+          className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-7 py-2.5 sm:py-3 rounded-full text-white text-sm font-bold shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer w-full sm:w-auto justify-center"
+          style={{ background: `linear-gradient(135deg, ${houseColors.primary}, ${houseColors.dark})` }}
         >
-          <span style={{ fontSize: '18px' }}>📅</span>
+          <span className="text-lg">📅</span>
           <span>View All Events</span>
-          <span style={{ opacity: 0.8 }}>→</span>
+          <span className="opacity-80">→</span>
         </button>
       </div>
 

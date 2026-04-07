@@ -8,12 +8,15 @@ import toast from 'react-hot-toast';
 const StudentParticipations = () => {
   const [participations, setParticipations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
 
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await getMyParticipations();
+        const res = await getMyParticipations(page);
         setParticipations(res.data.participations);
+        setPagination(res.data.pagination);
       } catch {
         toast.error('Failed to load participations');
       } finally {
@@ -21,7 +24,7 @@ const StudentParticipations = () => {
       }
     };
     fetch();
-  }, []);
+  }, [page]);
 
   if (loading) return <LoadingSkeleton type="table" count={5} />;
 
@@ -64,12 +67,37 @@ const StudentParticipations = () => {
           <p className="text-gray-400">Register and attend events to see them here</p>
         </div>
       ) : (
-        <DataTable
-          columns={columns}
-          data={participations}
-          searchFields={['eventId.name', 'eventId.houseId.name']}
-          title={`${participations.length} Events Participated`}
-        />
+        <>
+          <DataTable
+            columns={columns}
+            data={participations}
+            searchFields={['eventId.name', 'eventId.houseId.name']}
+            title={`${pagination?.total || participations.length} Events Participated`}
+          />
+
+          {/* Pagination Controls */}
+          {pagination && pagination.pages > 1 && (
+            <div className="flex justify-center items-center gap-3 mt-8">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+              >
+                ← Previous
+              </button>
+              <span className="text-sm text-gray-600">
+                Page {pagination.page} of {pagination.pages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
+                disabled={page === pagination.pages}
+                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+              >
+                Next →
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -1,8 +1,10 @@
+
 import { useEffect, useState, useRef } from 'react';
 import { getGlobalDashboard } from '../../services/api';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import toast from 'react-hot-toast';
 import { getHouseColor, isImageLogo } from '../../utils/constants';
+
 
 /* ─── Animated Counter ─── */
 function AnimatedCounter({ value, duration = 1200 }) {
@@ -35,30 +37,8 @@ function AnimatedCounter({ value, duration = 1200 }) {
 function StatCard({ icon, label, value, color, gradient, delay = 0 }) {
   return (
     <div
-      style={{
-        position: 'relative',
-        background: 'rgba(255,255,255,0.04)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '20px',
-        padding: '28px 24px',
-        overflow: 'hidden',
-        cursor: 'pointer',
-        transition: 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
-        animationDelay: `${delay}ms`,
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.transform = 'translateY(-6px) scale(1.02)';
-        e.currentTarget.style.border = `1px solid ${color}40`;
-        e.currentTarget.style.boxShadow = `0 20px 50px rgba(0,0,0,0.4), 0 0 30px ${color}20`;
-        e.currentTarget.style.background = 'rgba(255,255,255,0.07)';
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.transform = 'translateY(0) scale(1)';
-        e.currentTarget.style.border = '1px solid rgba(255,255,255,0.08)';
-        e.currentTarget.style.boxShadow = 'none';
-        e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-      }}
+      className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg shadow-purple-200/40 border border-purple-100/60 p-4 sm:p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-300/50 cursor-pointer relative overflow-hidden"
+      style={{ position: 'relative', animationDelay: `${delay}ms` }}
     >
       {/* Decorative gradient blob */}
       <div style={{
@@ -69,33 +49,29 @@ function StatCard({ icon, label, value, color, gradient, delay = 0 }) {
       }} />
 
       {/* Icon */}
-      <div style={{
-        width: '48px', height: '48px',
-        borderRadius: '14px',
+      <div className="w-10 h-10 sm:w-12 sm:h-12" style={{
+        borderRadius: '12px',
         background: `linear-gradient(135deg, ${color}30, ${color}10)`,
         border: `1px solid ${color}30`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: '22px', marginBottom: '16px',
+        fontSize: 'clamp(18px, 4vw, 22px)',
+        marginBottom: '12px',
         boxShadow: `0 4px 15px ${color}20`,
+        color: '#222',
       }}>
         {icon}
       </div>
 
       {/* Value */}
-      <div style={{
-        fontSize: '42px', fontWeight: '800',
-        background: gradient,
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        lineHeight: 1, marginBottom: '6px',
-        fontVariantNumeric: 'tabular-nums',
-      }}>
+      <div
+        className="text-3xl sm:text-4xl md:text-[42px] font-extrabold leading-none mb-1.5 tabular-nums"
+        style={{ background: gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+      >
         <AnimatedCounter value={value} />
       </div>
 
       {/* Label */}
-      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', fontWeight: '500', margin: 0, letterSpacing: '0.5px' }}>
+      <p style={{ color: '#444', fontSize: '13px', fontWeight: '500', margin: 0, letterSpacing: '0.5px' }}>
         {label}
       </p>
 
@@ -118,112 +94,50 @@ function HouseRow({ house, index, maxPoints, animated }) {
 
   return (
     <div
-      style={{
-        position: 'relative',
-        padding: '20px 24px',
-        background: isTop
-          ? 'linear-gradient(135deg, rgba(251,191,36,0.08), rgba(245,158,11,0.04))'
-          : 'rgba(255,255,255,0.02)',
-        border: isTop
-          ? '1px solid rgba(251,191,36,0.2)'
-          : '1px solid rgba(255,255,255,0.05)',
-        borderRadius: '16px',
-        marginBottom: '12px',
-        display: 'flex', alignItems: 'center', gap: '20px',
-        cursor: 'pointer',
-        transition: 'all 0.3s ease',
-        animationDelay: `${index * 100}ms`,
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-        e.currentTarget.style.transform = 'translateX(4px)';
-        e.currentTarget.style.boxShadow = `0 8px 30px rgba(0,0,0,0.3), 0 0 20px ${colors.primary}15`;
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.background = isTop
-          ? 'linear-gradient(135deg, rgba(251,191,36,0.08), rgba(245,158,11,0.04))'
-          : 'rgba(255,255,255,0.02)';
-        e.currentTarget.style.transform = 'translateX(0)';
-        e.currentTarget.style.boxShadow = 'none';
-      }}
+      className={`relative flex items-center gap-3 sm:gap-5 p-4 sm:p-5 rounded-xl sm:rounded-2xl mb-3 cursor-pointer transition-all duration-300 border ${
+        isTop
+          ? 'bg-amber-50/80 border-amber-200/60 hover:bg-amber-50 hover:shadow-lg'
+          : 'bg-white/80 border-purple-100/50 hover:bg-white hover:shadow-lg hover:shadow-purple-200/30'
+      }`}
     >
-      {/* Rank */}
-      <div style={{
-        width: '40px', textAlign: 'center', flexShrink: 0,
-        fontSize: index < 3 ? '24px' : '16px',
-        fontWeight: '700', color: 'rgba(255,255,255,0.4)',
-      }}>
-        {index < 3 ? medals[index] : `#${index + 1}`}
+      <div className="w-8 sm:w-10 text-center shrink-0">
+        {index < 3 ? <span className="text-xl sm:text-2xl">{medals[index]}</span> : <span className="text-sm sm:text-base font-bold text-gray-400">#{index + 1}</span>}
       </div>
-
-      {/* House logo */}
-      <div style={{
-        width: '52px', height: '52px', borderRadius: '50%', flexShrink: 0,
-        background: `linear-gradient(135deg, ${colors.primary}, ${colors.dark})`,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        overflow: 'hidden', fontSize: '24px',
-        boxShadow: `0 4px 15px ${colors.primary}40`,
-      }}>
+      <div
+        className="w-10 h-10 sm:w-14 sm:h-14 rounded-full shrink-0 flex items-center justify-center overflow-hidden text-xl sm:text-2xl"
+        style={{ background: `linear-gradient(135deg, ${colors.primary}, ${colors.dark})`, boxShadow: `0 4px 15px ${colors.primary}40` }}
+      >
         {isImageLogo(house.name) ? (
-          <img
-            src={`/${house.name.toLowerCase()}-logo.png`}
-            alt={house.name}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
+          <img src={`/${house.name.toLowerCase()}-logo.png`} alt={house.name} className="w-full h-full object-cover" />
         ) : (
-          <span style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }}>
-            {house.logo || '🏠'}
-          </span>
+          <span className="drop-shadow-md">{house.logo || '🏠'}</span>
         )}
       </div>
-
-      {/* Name, bar, meta */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-          <h4 style={{ fontWeight: '700', color: 'rgba(255,255,255,0.9)', fontSize: '16px', margin: 0 }}>
-            {house.name}
-          </h4>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-0.5 sm:mb-1">
+          <h4 className="font-bold text-gray-900 text-sm sm:text-base m-0 truncate">{house.name}</h4>
           {isTop && (
-            <span style={{
-              fontSize: '10px', fontWeight: '700', padding: '2px 8px',
-              borderRadius: '50px', color: '#F59E0B',
-              background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.3)',
-              letterSpacing: '0.5px',
-            }}>LEADING</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-amber-600 bg-amber-100 border border-amber-200/60 shrink-0">LEADING</span>
           )}
         </div>
-        <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', margin: '0 0 10px', fontWeight: '500' }}>
+        <p className="text-xs text-gray-500 m-0 mb-1.5 sm:mb-2.5 font-medium">
           {house.eventsCount || 0} events · {house.studentsCount ?? 0} students
         </p>
-        {/* Progress bar */}
-        <div style={{
-          height: '6px', borderRadius: '50px', overflow: 'hidden',
-          background: 'rgba(255,255,255,0.06)',
-        }}>
-          <div style={{
-            height: '100%', borderRadius: '50px',
-            width: `${barWidth}%`,
-            background: `linear-gradient(90deg, ${colors.primary}, ${colors.dark})`,
-            transition: 'width 1.2s cubic-bezier(0.25, 1, 0.5, 1)',
-            boxShadow: `0 0 8px ${colors.primary}60`,
-          }} />
+        <div className="h-1.5 sm:h-2 rounded-full overflow-hidden bg-gray-100">
+          <div
+            className="h-full rounded-full transition-all duration-700 ease-out"
+            style={{ width: `${barWidth}%`, background: `linear-gradient(90deg, ${colors.primary}, ${colors.dark})` }}
+          />
         </div>
       </div>
-
-      {/* Points */}
-      <div style={{ textAlign: 'right', flexShrink: 0, paddingLeft: '16px' }}>
-        <div style={{
-          fontSize: '28px', fontWeight: '800',
-          background: `linear-gradient(135deg, ${colors.primary}, ${colors.dark})`,
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          lineHeight: 1,
-          fontVariantNumeric: 'tabular-nums',
-        }}>
+      <div className="text-right shrink-0 pl-2 sm:pl-4">
+        <div
+          className="text-lg sm:text-2xl md:text-3xl font-extrabold tabular-nums leading-none"
+          style={{ background: `linear-gradient(135deg, ${colors.primary}, ${colors.dark})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+        >
           <AnimatedCounter value={house.totalPoints} />
         </div>
-        <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)', margin: '2px 0 0', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.5px' }}>pts</p>
+        <p className="text-[10px] sm:text-[11px] text-gray-400 mt-0.5 font-medium uppercase tracking-wider">pts</p>
       </div>
     </div>
   );
@@ -271,7 +185,7 @@ const AdminDashboard = () => {
     : 1;
 
   return (
-    <div>
+    <div className="space-y-6 sm:space-y-8">
       <style>{`
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(24px); }
@@ -288,50 +202,23 @@ const AdminDashboard = () => {
         .stat-cards-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 14px;
-          margin-bottom: 40px;
+          gap: 10px;
+          margin-bottom: 24px;
+        }
+        @media (min-width: 640px) {
+          .stat-cards-grid { gap: 14px; margin-bottom: 32px; }
         }
         @media (min-width: 768px) {
           .stat-cards-grid {
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
+            margin-bottom: 40px;
           }
         }
       `}</style>
 
-      {/* Welcome banner */}
-      <div className="fade-up" style={{
-        marginBottom: '36px',
-        background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.08))',
-        border: '1px solid rgba(99,102,241,0.2)',
-        borderRadius: '20px',
-        padding: '28px 32px',
-        position: 'relative', overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.05), transparent)',
-          animation: 'glowPulse 3s ease-in-out infinite',
-        }} />
-        <div style={{ position: 'relative' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-            <span style={{ fontSize: '28px' }}>👋</span>
-            <h2 style={{
-              fontSize: '24px', fontWeight: '800', margin: 0,
-              background: 'linear-gradient(135deg, #a78bfa, #818cf8, #60a5fa)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-            }}>Welcome back, Admin!</h2>
-          </div>
-          <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '14px', margin: 0, fontWeight: '500' }}>
-            Here's a complete overview of your House Event Management System.
-            Monitor all houses, track events, and manage students from one place.
-          </p>
-        </div>
-      </div>
-
       {/* Stat Cards */}
-      <div className="stat-cards-grid">
+      <div className="stat-cards-grid" style={{ color: '#111' }}>
         <div className="fade-up" style={{ animationDelay: '100ms' }}>
           <StatCard
             icon="🎓"
@@ -374,52 +261,24 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+
+
       {/* Leaderboard section */}
       <div className="fade-up" style={{ animationDelay: '500ms' }} ref={leaderboardRef}>
         {/* Section header */}
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          marginBottom: '24px',
-        }}>
+        <div className="flex flex-col items-center justify-center gap-4 mb-6 text-center w-full">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-              <span style={{ fontSize: '22px' }}>🏆</span>
-              <h2 style={{
-                fontSize: '20px', fontWeight: '800', margin: 0, color: 'rgba(255,255,255,0.9)'
-              }}>
-                Global House Leaderboard
-              </h2>
+            <div className="flex flex-col items-center gap-3 mb-1">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-100 text-2xl">🏆</div>
+              <h2 className="text-xl font-extrabold m-0 text-gray-900">Global House Leaderboard</h2>
+              <p className="text-gray-500 text-sm m-0 font-medium">Real-time rankings across all 5 houses</p>
             </div>
-            <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: '13px', margin: 0, fontWeight: '500' }}>
-              Real-time rankings across all 5 houses
-            </p>
           </div>
 
-          {/* Live badge */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '8px',
-            background: 'rgba(34,197,94,0.1)',
-            border: '1px solid rgba(34,197,94,0.25)',
-            borderRadius: '50px', padding: '6px 14px',
-          }}>
-            <div style={{
-              width: '8px', height: '8px', borderRadius: '50%', background: '#22C55E',
-              boxShadow: '0 0 8px rgba(34,197,94,0.8)', animation: 'glowPulse 2s ease-in-out infinite'
-            }} />
-            <span style={{ color: '#22C55E', fontSize: '12px', fontWeight: '700', letterSpacing: '0.5px' }}>
-              LIVE
-            </span>
-          </div>
         </div>
 
         {/* Leaderboard container */}
-        <div style={{
-          background: 'rgba(255,255,255,0.02)',
-          border: '1px solid rgba(255,255,255,0.06)',
-          borderRadius: '24px',
-          padding: '24px',
-          backdropFilter: 'blur(20px)',
-        }}>
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl border border-purple-100/60 shadow-xl shadow-purple-200/40 p-4 sm:p-6 w-full max-w-[900px] mx-auto overflow-x-hidden">
           {data?.dashboard?.length > 0 ? (
             data.dashboard.map((house, i) => (
               <HouseRow
@@ -431,18 +290,15 @@ const AdminDashboard = () => {
               />
             ))
           ) : (
-            <div style={{ textAlign: 'center', padding: '60px 20px', color: 'rgba(255,255,255,0.3)' }}>
-              <div style={{ fontSize: '48px', marginBottom: '12px' }}>📊</div>
-              <p style={{ fontSize: '16px', fontWeight: '600' }}>No leaderboard data available</p>
+            <div className="text-center py-16">
+              <div className="text-5xl mb-3">📊</div>
+              <p className="text-gray-500 text-base font-semibold">No leaderboard data available</p>
             </div>
           )}
         </div>
 
         {/* Footer note */}
-        <p style={{
-          textAlign: 'center', color: 'rgba(255,255,255,0.2)',
-          fontSize: '12px', marginTop: '16px', fontWeight: '500',
-        }}>
+        <p className="text-center text-gray-500 text-xs mt-4 font-medium">
           Rankings update automatically · Points based on event participation and performance
         </p>
       </div>

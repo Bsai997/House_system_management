@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import FloatingNavbar from '../../components/FloatingNavbar';
 import ProfileSidebar from '../../components/ProfileSidebar';
 import AddMemberModal from '../../components/AddMemberModal';
+import AddAdminEventModal from '../../components/AddAdminEventModal';
 import { useAuth } from '../../context/AuthContext';
 
 const ADMIN_MENU = [
@@ -20,6 +21,7 @@ const AdminLayout = () => {
   const { user } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [memberModalOpen, setMemberModalOpen] = useState(false);
+  const [eventModalOpen, setEventModalOpen] = useState(false);
   const location = useLocation();
 
   const now = new Date();
@@ -27,29 +29,11 @@ const AdminLayout = () => {
   const dateString = now.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 40%, #16213e 70%, #0f3460 100%)' }}>
-      {/* Animated background orbs */}
-      <div style={{
-        position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0
-      }}>
-        <div style={{
-          position: 'absolute', top: '-20%', left: '-10%',
-          width: '600px', height: '600px',
-          background: 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)',
-          borderRadius: '50%', animation: 'orb1 8s ease-in-out infinite'
-        }} />
-        <div style={{
-          position: 'absolute', top: '30%', right: '-15%',
-          width: '500px', height: '500px',
-          background: 'radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)',
-          borderRadius: '50%', animation: 'orb2 10s ease-in-out infinite'
-        }} />
-        <div style={{
-          position: 'absolute', bottom: '-10%', left: '30%',
-          width: '400px', height: '400px',
-          background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)',
-          borderRadius: '50%', animation: 'orb1 12s ease-in-out infinite reverse'
-        }} />
+    <div className="min-h-screen bg-gradient-to-b from-purple-50/60 via-white to-white text-gray-800 relative">
+      {/* Subtle background blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute -top-32 left-1/3 w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] rounded-full bg-purple-200/30 blur-[120px]" />
+        <div className="absolute top-1/2 right-0 w-[125px] h-[125px] sm:w-[175px] sm:h-[175px] rounded-full bg-blue-200/20 blur-[120px]" />
       </div>
 
       <style>{`
@@ -203,55 +187,48 @@ const AdminLayout = () => {
         }
       `}</style>
 
-      {/* ── HEADER ── */}
-      <header style={{ position: 'relative', zIndex: 10, paddingTop: '24px', paddingBottom: '0' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px' }}>
+      {/* ── HEADER (Hero section) - White background ── */}
+      <header className="relative z-10 bg-white border-b border-gray-100 pt-4 sm:pt-6 pb-4 sm:pb-5">
+        <div className="w-full px-3 sm:px-6 lg:px-8">
 
-          {/* Top row */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          {/* Top row: Logo, Dept name, Add Member, Profile */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
 
             {/* Left: Logo + Title */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              {/* Logo circle */}
-              <div style={{
-                width: '56px', height: '56px',
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.2))',
-                border: '1px solid rgba(99,102,241,0.4)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                overflow: 'hidden',
-                boxShadow: '0 4px 20px rgba(99,102,241,0.3)'
-              }}>
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full overflow-hidden border-2 border-purple-100 shadow-md flex items-center justify-center bg-white">
                 <img src="/dept-logo.png" alt="Logo"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  className="w-full h-full object-cover"
                   onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<span style="font-size:24px">🏛️</span>'; }}
                 />
               </div>
-
-              {/* Text */}
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2px' }}>
-                  <h1 style={{ fontSize: '22px', fontWeight: '800', color: 'white', margin: 0, letterSpacing: '-0.3px' }}>
-                    CSD &amp; CSIT Department
-                  </h1>
-                </div>
-                <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px', margin: 0, fontWeight: '500' }}>
-                  🏆 House Event Management System · Admin Panel
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-gray-900 m-0 tracking-tight truncate">
+                  CSD &amp; CSIT Dept
+                </h1>
+                <p className="text-gray-500 text-xs sm:text-sm m-0 font-medium hidden sm:block">
+                  Where Learning Meets Innovation
                 </p>
               </div>
             </div>
 
-            {/* Right: Actions */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-
-              {/* Add Member button */}
-              <button className="add-member-btn" onClick={() => setMemberModalOpen(true)}>
+            {/* Right: Add Event + Add Member + Profile */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <button className="add-member-btn !px-3 !py-2 sm:!px-6 sm:!py-2.5 !text-sm sm:!text-base" onClick={() => setEventModalOpen(true)}>
                 <span>＋</span>
-                <span>Add Member</span>
+                <span className="hidden sm:inline">Add Event</span>
+                <span className="sm:hidden">Event</span>
               </button>
-
-              {/* Profile icon button */}
-              <button className="profile-btn" onClick={() => setProfileOpen(true)} title="View Profile">
+              <button className="add-member-btn !px-3 !py-2 sm:!px-6 sm:!py-2.5 !text-sm sm:!text-base" onClick={() => setMemberModalOpen(true)}>
+                <span>＋</span>
+                <span className="hidden sm:inline">Add Member</span>
+                <span className="sm:hidden">Add</span>
+              </button>
+              <button
+                onClick={() => setProfileOpen(true)}
+                title="View Profile"
+                className="w-[42px] h-[42px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 bg-purple-100 text-purple-700 border border-purple-200 hover:bg-purple-200 hover:scale-105"
+              >
                 <HiUser size={20} />
               </button>
             </div>
@@ -260,16 +237,23 @@ const AdminLayout = () => {
         </div>
 
         {/* Floating Navbar */}
-        <FloatingNavbar menuItems={ADMIN_MENU} onProfileClick={() => setProfileOpen(true)} />
+       
       </header>
 
+
+      {/* Floating Navbar below Hero section */}
+      <div className="flex justify-center w-full px-2 sm:px-4 mt-2 mb-4">
+        <FloatingNavbar menuItems={ADMIN_MENU} />
+      </div>
+
       {/* ── MAIN CONTENT ── */}
-      <main className="main-content-area" style={{ position: 'relative', zIndex: 1, maxWidth: '1280px', margin: '0 auto', padding: '32px 24px 60px' }}>
+      <main className="main-content-area relative z-10 w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-12 sm:pb-16">
         <Outlet />
       </main>
 
       <ProfileSidebar isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
       <AddMemberModal isOpen={memberModalOpen} onClose={() => setMemberModalOpen(false)} />
+      <AddAdminEventModal isOpen={eventModalOpen} onClose={() => setEventModalOpen(false)} />
     </div>
   );
 };

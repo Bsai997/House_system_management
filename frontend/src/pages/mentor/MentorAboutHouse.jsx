@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getHouseDashboard, getMentorHouseEvents } from '../../services/api';
 import DataTable from '../../components/DataTable';
 import EventCard from '../../components/EventCard';
@@ -10,6 +10,31 @@ import {
   HiUsers, HiStar, HiTrendingUp, HiCalendar,
   HiArrowLeft, HiChevronRight, HiClock, HiLocationMarker
 } from 'react-icons/hi';
+
+/* ─── Animated Counter ─── */
+function AnimatedCounter({ value, duration = 1200 }) {
+  const [display, setDisplay] = useState(0);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    if (value == null) return;
+    const start = performance.now();
+    const to = Number(value);
+
+    const animate = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      setDisplay(Math.round(to * eased));
+      if (progress < 1) rafRef.current = requestAnimationFrame(animate);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [value, duration]);
+
+  return <>{display}</>;
+}
 
 const MentorAboutHouse = () => {
   const { user } = useAuth();
@@ -53,19 +78,19 @@ const MentorAboutHouse = () => {
   const columns = [
     {
       key: 'rank',
-      label: 'Rank',
+      label: 'S.No',
       sortable: true,
       render: (row) => {
-        const medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
+        const isTop3 = row.rank <= 3;
         return (
-          <div className="flex items-center gap-2">
-            {row.rank <= 3 ? (
-              <span className="text-lg">{medals[row.rank]}</span>
-            ) : (
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-sm font-bold text-gray-500">
-                {row.rank}
-              </span>
-            )}
+          <div className="flex items-center justify-center">
+            <span
+              className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${
+                isTop3 ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'
+              }`}
+            >
+              {row.rank}
+            </span>
           </div>
         );
       },
@@ -96,20 +121,9 @@ const MentorAboutHouse = () => {
       label: 'Points',
       sortable: true,
       render: (row) => (
-        <div className="flex items-center gap-2">
-          <div className="flex-1 max-w-[80px] h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${Math.min((row.totalPoints / (dashboard?.students?.[0]?.totalPoints || 1)) * 100, 100)}%`,
-                backgroundColor: houseColors.primary,
-              }}
-            />
-          </div>
-          <span className="font-bold text-sm" style={{ color: houseColors.primary }}>
-            {row.totalPoints}
-          </span>
-        </div>
+        <span className="font-bold text-sm" style={{ color: houseColors.primary }}>
+          {row.totalPoints}
+        </span>
       ),
     },
   ];
@@ -209,19 +223,31 @@ const MentorAboutHouse = () => {
 
   return (
     <div className="space-y-8">
+      <style>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(24px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up {
+          animation: fadeUp 0.6s ease forwards;
+          opacity: 0;
+        }
+      `}</style>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statsCards.map((stat, i) => (
           <div
             key={i}
-            className="group relative bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+            className="fade-up group relative bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+            style={{ animationDelay: `${(i + 1) * 100}ms` }}
           >
             <div className="flex items-start justify-between mb-3">
               <div className={`w-11 h-11 rounded-xl ${stat.bgLight} ${stat.textColor} flex items-center justify-center`}>
                 {stat.icon}
               </div>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+            <p className="text-2xl font-bold text-gray-900"><AnimatedCounter value={stat.value} /></p>
             <p className="text-sm text-gray-500 mt-0.5">{stat.label}</p>
             <div className={`absolute bottom-0 left-4 right-4 h-0.5 rounded-full bg-gradient-to-r ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
           </div>
@@ -229,7 +255,7 @@ const MentorAboutHouse = () => {
       </div>
 
       {/* House Info + Events Quick Access */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="fade-up grid grid-cols-1 lg:grid-cols-3 gap-6" style={{ animationDelay: '500ms' }}>
         {/* House Info Card */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
@@ -317,7 +343,7 @@ const MentorAboutHouse = () => {
 
       {/* Student Rankings Table */}
       {dashboard && (
-        <div>
+        <div className="fade-up" style={{ animationDelay: '700ms' }}>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-1 h-8 rounded-full" style={{ backgroundImage: `linear-gradient(to bottom, ${houseColors.primary}, ${houseColors.dark})` }} />
             <div>

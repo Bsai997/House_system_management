@@ -9,15 +9,18 @@ const TeamLeadHistory = () => {
   const [loading, setLoading] = useState(true);
   const [publishing, setPublishing] = useState(null);
   const [closing, setClosing] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState(null);
 
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [page]);
 
   const fetchEvents = async () => {
     try {
-      const res = await getMyEvents();
+      const res = await getMyEvents(page);
       setEvents(res.data.events);
+      setPagination(res.data.pagination);
     } catch {
       toast.error('Failed to load events');
     } finally {
@@ -64,6 +67,7 @@ const TeamLeadHistory = () => {
           <p className="text-gray-400">Create your first event from the Home page</p>
         </div>
       ) : (
+        <>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((event) => (
             <EventCard
@@ -99,6 +103,30 @@ const TeamLeadHistory = () => {
             />
           ))}
         </div>
+
+        {/* Pagination Controls */}
+        {pagination && pagination.pages > 1 && (
+          <div className="flex justify-center items-center gap-3 mt-8">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+            >
+              ← Previous
+            </button>
+            <span className="text-sm text-gray-600">
+              Page {pagination.page} of {pagination.pages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
+              disabled={page === pagination.pages}
+              className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+            >
+              Next →
+            </button>
+          </div>
+        )}
+      </>
       )}
     </div>
   );

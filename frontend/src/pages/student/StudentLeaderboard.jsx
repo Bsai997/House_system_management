@@ -26,8 +26,12 @@ const StudentLeaderboard = () => {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-gray-900 mb-6">🏆 Global Leaderboard</h2>
-      <LeaderboardCard houses={houses} />
+      <h2 className="text-xl font-bold text-gray-900 mb-6 text-center">🏆 Global Leaderboard</h2>
+      <div className="flex justify-center w-full">
+        <div className="w-full max-w-3xl">
+          <LeaderboardCard houses={houses} />
+        </div>
+      </div>
     </div>
   );
 };
